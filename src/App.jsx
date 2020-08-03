@@ -9,14 +9,6 @@ class App extends Component {
         return (
             <Router>
                 <div className="app">
-                    <ul>
-                        <li>
-                            <Link to="/home">首页</Link>
-                        </li>
-                        <li>
-                            <Link to="/citylist">城市</Link>
-                        </li>
-                    </ul>
                     <Route path="/home" component={Home}/>
                     <Route path="/citylist" component={CityList}/>
                 </div>
