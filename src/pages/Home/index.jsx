@@ -17,7 +17,7 @@ const tabItems = [
     {
         title: "首页",
         icon: "icon-ind",
-        path: "/home/index",
+        path: "/home",
     },
     {
         title: "找房",
@@ -47,7 +47,7 @@ export default class Home extends Component {
                 title={item.title}
                 key={item.title}
                 icon={<i className={`iconfont ${item.icon}`} />}
-                selectedIcon={<i className="iconfont icon-ind" />}
+                selectedIcon={<i className={`iconfont ${item.icon}`} />}
                 selected={this.state.selectedTab === item.path}
                 onPress={() => {
                     this.setState({
@@ -62,7 +62,7 @@ export default class Home extends Component {
         return (
             <div className="home">
                 {/* 二级路由出口在 Home 组件里 */}
-                <Route path="/home/index" component={Index} />
+                <Route exact path="/home" component={Index} />
                 <Route path="/home/list" component={HouseList} />
                 <Route path="/home/news" component={News} />
                 <Route path="/home/profile" component={Profile} />
