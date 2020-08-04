@@ -22,25 +22,24 @@ const formatCityData = list => {
     return { cityList, cityIndex };
 };
 
-const list = Array(100).fill("r");
-
 // https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md
 
-function rowRenderer({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // 当前项是否正在滚动列表
-    isVisible, // 当前项在 List 中是否可见
-    style, // Style object to be applied to row (to position it)
-}) {
-    return (
-        <div key={key} style={style}>
-            {list[index]}
-        </div>
-    );
-}
+const formatCityIndex = letter => {
+    switch (letter) {
+        case "#":
+            return "当前定位";
+        case "hot":
+            return "热门城市";
+        default:
+            return letter.toUpperCase();
+    }
+};
 
 export default class CityList extends Component {
+    state = {
+        cityList: {},
+        cityIndex: [],
+    };
     componentDidMount() {
         // 获取城市列表数据
         this.getCityList();
@@ -65,8 +64,26 @@ export default class CityList extends Component {
         cityList["#"] = [curCity];
         cityIndex.unshift("#");
 
-        console.log(cityList, cityIndex);
+        this.setState({ cityList, cityIndex });
     }
+    rowRenderer = ({
+        key, // Unique key within array of rows
+        index, // Index of row within collection
+        isScrolling, // 当前项是否正在滚动列表
+        isVisible, // 当前项在 List 中是否可见
+        style, // Style object to be applied to row (to position it)
+    }) => {
+        const { cityIndex } = this.state;
+        const letter = cityIndex[index];
+        return (
+            <div key={key} style={style} className="city">
+                <div className="title">
+                    {formatCityIndex(letter)}
+                </div>
+                <div className="name">上海</div>
+            </div>
+        );
+    };
     render() {
         return (
             <div className="citylist">
@@ -83,9 +100,9 @@ export default class CityList extends Component {
                         <List
                             width={width}
                             height={height}
-                            rowCount={list.length}
-                            rowHeight={20}
-                            rowRenderer={rowRenderer}
+                            rowCount={this.state.cityIndex.length}
+                            rowHeight={100}
+                            rowRenderer={this.rowRenderer}
                         />}
                 </AutoSizer>
             </div>
