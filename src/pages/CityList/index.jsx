@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavBar } from "antd-mobile";
+import { NavBar, Toast } from "antd-mobile";
 import axios from "axios";
 
 import { List, AutoSizer } from "react-virtualized";
@@ -37,6 +37,7 @@ const formatCityIndex = letter => {
 
 const TITLE_HEIGHT = 36;
 const NAME_HEIGHT = 50;
+const HOUSE_CITY = ["北京", "上海", "广州", "深圳"];
 
 export default class CityList extends Component {
     constructor(props) {
@@ -77,6 +78,14 @@ export default class CityList extends Component {
 
         this.setState({ cityList, cityIndex });
     }
+    changeCity = ({ label, value }) => {
+        if (HOUSE_CITY.includes(label)) {
+            localStorage.setItem("hkzf_city", JSON.stringify({ label, value }));
+            this.props.history.go(-1);
+        } else {
+            Toast.info("该城市暂无房源数据", 3, null, false);
+        }
+    };
     rowRenderer = ({
         key, // Unique key within array of rows
         index, // Index of row within collection
@@ -94,7 +103,11 @@ export default class CityList extends Component {
                     {formatCityIndex(letter)}
                 </div>
                 {cityList[letter].map(item =>
-                    <div key={item.value} className="name">
+                    <div
+                        key={item.value}
+                        className="name"
+                        onClick={() => this.changeCity(item)}
+                    >
                         {item.label}
                     </div>
                 )}
@@ -124,9 +137,7 @@ export default class CityList extends Component {
         );
     }
     // 获取 List 组件中渲染行的信息
-    onRowsRendered = ({
-        startIndex
-    }) => {
+    onRowsRendered = ({ startIndex }) => {
         if (this.state.activeIndex !== startIndex) {
             this.setState({ activeIndex: startIndex });
         }
