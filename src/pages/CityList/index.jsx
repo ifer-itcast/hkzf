@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { NavBar } from "antd-mobile";
 import axios from "axios";
 
-import { getCurrentCity } from '../../utils';
+import { List } from "react-virtualized";
+
+import { getCurrentCity } from "../../utils";
 
 import "./index.scss";
 
@@ -20,6 +22,24 @@ const formatCityData = list => {
     return { cityList, cityIndex };
 };
 
+const list = Array(100).fill('r');
+
+// https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md
+
+function rowRenderer({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    isScrolling, // 当前项是否正在滚动列表
+    isVisible, // 当前项在 List 中是否可见
+    style, // Style object to be applied to row (to position it)
+}) {
+    return (
+        <div key={key} style={style}>
+            {list[index]}
+        </div>
+    );
+}
+
 export default class CityList extends Component {
     componentDidMount() {
         // 获取城市列表数据
@@ -32,16 +52,18 @@ export default class CityList extends Component {
         );
         const { cityList, cityIndex } = formatCityData(cityListRes.body);
         // 2. 热门城市数据
-        const { data: hotListRes } = await axios.get("http://localhost:8080/area/hot");
+        const { data: hotListRes } = await axios.get(
+            "http://localhost:8080/area/hot"
+        );
         // 将数据添加到 cityList 中
-        cityList['hot'] = hotListRes.body;
+        cityList["hot"] = hotListRes.body;
         // 将索引添加到 cityIndex 中
-        cityIndex.unshift('hot');
-        
+        cityIndex.unshift("hot");
+
         // 3. 获取当前定位城市
         const curCity = await getCurrentCity();
-        cityList['#'] = [curCity];
-        cityIndex.unshift('#');
+        cityList["#"] = [curCity];
+        cityIndex.unshift("#");
 
         console.log(cityList, cityIndex);
     }
@@ -56,6 +78,13 @@ export default class CityList extends Component {
                 >
                     城市选择
                 </NavBar>
+                <List
+                    width={300}
+                    height={300}
+                    rowCount={list.length}
+                    rowHeight={20}
+                    rowRenderer={rowRenderer}
+                />
             </div>
         );
     }
