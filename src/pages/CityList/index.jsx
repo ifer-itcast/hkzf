@@ -110,6 +110,12 @@ export default class CityList extends Component {
             </li>
         );
     }
+    // 获取 List 组件中渲染行的信息
+    onRowsRendered = ({ startIndex }) => {
+        if (this.state.activeIndex !== startIndex) {
+            this.setState({ activeIndex: startIndex });
+        }
+    };
     render() {
         return (
             <div className="citylist">
@@ -129,6 +135,7 @@ export default class CityList extends Component {
                             rowCount={this.state.cityIndex.length}
                             rowHeight={this.getRowHeight}
                             rowRenderer={this.rowRenderer}
+                            onRowsRendered={this.onRowsRendered}
                         />}
                 </AutoSizer>
                 {/* 右侧索引列表 */}
