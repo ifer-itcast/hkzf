@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Carousel, Flex, Grid } from "antd-mobile";
+import { Carousel, Flex, Grid, WingBlank } from "antd-mobile";
 import axios from "axios";
 
 import nav1 from "../../assets/images/nav-1.png";
@@ -41,6 +41,7 @@ export default class Index extends Component {
         swipers: [],
         isSwiperLoaded: false,
         groups: [],
+        news: [],
     };
     async getSwipers() {
         const { data } = await axios.get("http://localhost:8080/home/swiper");
@@ -52,11 +53,21 @@ export default class Index extends Component {
         });
         this.setState({ groups: data.body });
     }
+    async getNews() {
+        const { data } = await axios.get("http://localhost:8080/home/news", {
+            params: {
+                area: "AREA%7C88cff55c-aaa4-e2e0",
+            },
+        });
+        this.setState({ news: data.body });
+    }
     componentDidMount() {
         // 获取轮播图
         this.getSwipers();
         // 获取租房小组
         this.getGroups();
+        // 最新资讯
+        this.getNews();
     }
     renderSwipers() {
         return this.state.swipers.map(item =>
@@ -93,6 +104,32 @@ export default class Index extends Component {
             </Flex.Item>
         );
     };
+    renderNews() {
+        return this.state.news.map(item =>
+            <div className="news-item" key={item.id}>
+                <div className="imgwrap">
+                    <img
+                        className="img"
+                        src={`http://localhost:8080${item.imgSrc}`}
+                        alt=""
+                    />
+                </div>
+                <Flex className="content" direction="column" justify="between">
+                    <h3 className="title">
+                        {item.title}
+                    </h3>
+                    <Flex className="info" justify="between">
+                        <span>
+                            {item.from}
+                        </span>
+                        <span>
+                            {item.date}
+                        </span>
+                    </Flex>
+                </Flex>
+            </div>
+        );
+    }
     render() {
         return (
             <div className="index">
@@ -103,10 +140,12 @@ export default class Index extends Component {
                             {this.renderSwipers()}
                         </Carousel>}
                 </div>
+
                 {/* 导航 */}
                 <Flex className="nav">
                     {this.renderNavs()}
                 </Flex>
+
                 {/* 租房小组 */}
                 <div className="group">
                     <h3 className="group-title">
@@ -137,6 +176,14 @@ export default class Index extends Component {
                                 />
                             </Flex>}
                     />
+                </div>
+
+                {/* 最新资讯 */}
+                <div className="news">
+                    <h3 className="group-title">最新资讯</h3>
+                    <WingBlank size="md">
+                        {this.renderNews()}
+                    </WingBlank>
                 </div>
             </div>
         );
