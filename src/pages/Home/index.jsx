@@ -40,6 +40,12 @@ export default class Home extends Component {
     state = {
         selectedTab: this.props.location.pathname,
     };
+    componentDidUpdate(prevProps) {
+        // TabBar 的点击高亮是因为修改了 selectedTab
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            this.setState({ selectedTab: this.props.location.pathname });
+        }
+    }
 
     renderTabBarItem = () => {
         return tabItems.map(item =>
