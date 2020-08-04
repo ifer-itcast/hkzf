@@ -73,14 +73,20 @@ export default class CityList extends Component {
         isVisible, // 当前项在 List 中是否可见
         style, // Style object to be applied to row (to position it)
     }) => {
-        const { cityIndex } = this.state;
+        const { cityIndex, cityList } = this.state;
         const letter = cityIndex[index];
+
+        // cityList[letter] // 当前索引下对应的城市列表
         return (
             <div key={key} style={style} className="city">
                 <div className="title">
                     {formatCityIndex(letter)}
                 </div>
-                <div className="name">上海</div>
+                {cityList[letter].map(item =>
+                    <div key={item.value} className="name">
+                        {item.label}
+                    </div>
+                )}
             </div>
         );
     };
