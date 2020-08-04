@@ -42,6 +42,7 @@ export default class CityList extends Component {
     state = {
         cityList: {},
         cityIndex: [],
+        activeIndex: 0, // 默认高亮的右侧索引列表索引
     };
     componentDidMount() {
         // 获取城市列表数据
@@ -98,6 +99,17 @@ export default class CityList extends Component {
         const { cityList, cityIndex } = this.state;
         return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT;
     };
+    // 右侧索引列表
+    renderCityIndex() {
+        const { cityIndex, activeIndex } = this.state;
+        return cityIndex.map((item, index) =>
+            <li className="city-index-item" key={item}>
+                <span className={activeIndex === index ? "index-active" : ""}>
+                    {item === "hot" ? "热" : item.toUpperCase()}
+                </span>
+            </li>
+        );
+    }
     render() {
         return (
             <div className="citylist">
@@ -119,6 +131,10 @@ export default class CityList extends Component {
                             rowRenderer={this.rowRenderer}
                         />}
                 </AutoSizer>
+                {/* 右侧索引列表 */}
+                <ul className="city-index">
+                    {this.renderCityIndex()}
+                </ul>
             </div>
         );
     }
