@@ -11,3 +11,8 @@ body {
     font-family: 'Microsoft YaHei';
     color: #333;
 }
+
+#root,
+.app {
+    height: 100%;
+}
