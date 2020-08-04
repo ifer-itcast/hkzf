@@ -1,6 +1,10 @@
 .citylist {
     // 顶部导航兰
+    height: 100%;
+    padding-top: 45px;
+
     .navbar {
+        margin-top: -45px;
         color: #333;
         background-color: #f6f5f6;
 

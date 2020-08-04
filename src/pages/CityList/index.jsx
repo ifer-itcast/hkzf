@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { NavBar } from "antd-mobile";
 import axios from "axios";
 
-import { List } from "react-virtualized";
+import { List, AutoSizer } from "react-virtualized";
 
 import { getCurrentCity } from "../../utils";
 
@@ -22,7 +22,7 @@ const formatCityData = list => {
     return { cityList, cityIndex };
 };
 
-const list = Array(100).fill('r');
+const list = Array(100).fill("r");
 
 // https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md
 
@@ -78,13 +78,16 @@ export default class CityList extends Component {
                 >
                     城市选择
                 </NavBar>
-                <List
-                    width={300}
-                    height={300}
-                    rowCount={list.length}
-                    rowHeight={20}
-                    rowRenderer={rowRenderer}
-                />
+                <AutoSizer>
+                    {({ width, height }) =>
+                        <List
+                            width={width}
+                            height={height}
+                            rowCount={list.length}
+                            rowHeight={20}
+                            rowRenderer={rowRenderer}
+                        />}
+                </AutoSizer>
             </div>
         );
     }
