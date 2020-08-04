@@ -139,6 +139,37 @@ export default class Index extends Component {
                         <Carousel autoplay infinite>
                             {this.renderSwipers()}
                         </Carousel>}
+
+                    {/* Index 组件中轮播图中的顶部导航 */}
+                    <Flex className="search-box">
+                        {/* 左 */}
+                        <Flex className="search">
+                            {/* 左 -> 左 */}
+                            <div
+                                className="location"
+                                onClick={() =>
+                                    this.props.history.push("/citylist")}
+                            >
+                                <span className="name">上海</span>
+                                <i className="iconfont icon-arrow" />
+                            </div>
+
+                            {/* 左 -> 右 */}
+                            <div
+                                className="form"
+                                onClick={() =>
+                                    this.props.history.push("/search")}
+                            >
+                                <i className="iconfont icon-seach" />
+                                <span className="text">请输入小区或地址</span>
+                            </div>
+                        </Flex>
+                        {/* 右 */}
+                        <i
+                            className="iconfont icon-map"
+                            onClick={() => this.props.history.push("/map")}
+                        />
+                    </Flex>
                 </div>
 
                 {/* 导航 */}
