@@ -39,10 +39,11 @@ const navs = [
 export default class Index extends Component {
     state = {
         swipers: [],
+        isSwiperLoaded: false,
     };
     async getSwipers() {
         const { data } = await axios.get("http://localhost:8080/home/swiper");
-        this.setState({ swipers: data.body });
+        this.setState({ swipers: data.body, isSwiperLoaded: true });
     }
     componentDidMount() {
         this.getSwipers();
@@ -85,9 +86,12 @@ export default class Index extends Component {
     render() {
         return (
             <div className="index">
-                <Carousel autoplay infinite>
-                    {this.renderSwipers()}
-                </Carousel>
+                <div className="swiper">
+                    {this.state.isSwiperLoaded &&
+                        <Carousel autoplay infinite>
+                            {this.renderSwipers()}
+                        </Carousel>}
+                </div>
                 <Flex className="nav">
                     {this.renderNavs()}
                 </Flex>
