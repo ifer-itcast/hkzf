@@ -39,14 +39,21 @@ const TITLE_HEIGHT = 36;
 const NAME_HEIGHT = 50;
 
 export default class CityList extends Component {
-    state = {
-        cityList: {},
-        cityIndex: [],
-        activeIndex: 0, // 默认高亮的右侧索引列表索引
-    };
-    componentDidMount() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            cityList: {},
+            cityIndex: [],
+            activeIndex: 0, // 默认高亮的右侧索引列表索引
+        };
+        this.cityListComponent = React.createRef();
+    }
+
+    async componentDidMount() {
         // 获取城市列表数据
-        this.getCityList();
+        await this.getCityList();
+        // 提前计算 List 中每一行的高度，实现 scrollToRow 的精确跳转
+        this.cityListComponent.current.measureAllRows();
     }
     async getCityList() {
         // 1. 城市列表数据
@@ -103,7 +110,13 @@ export default class CityList extends Component {
     renderCityIndex() {
         const { cityIndex, activeIndex } = this.state;
         return cityIndex.map((item, index) =>
-            <li className="city-index-item" key={item}>
+            <li
+                className="city-index-item"
+                key={item}
+                onClick={() => {
+                    this.cityListComponent.current.scrollToRow(index);
+                }}
+            >
                 <span className={activeIndex === index ? "index-active" : ""}>
                     {item === "hot" ? "热" : item.toUpperCase()}
                 </span>
@@ -111,7 +124,9 @@ export default class CityList extends Component {
         );
     }
     // 获取 List 组件中渲染行的信息
-    onRowsRendered = ({ startIndex }) => {
+    onRowsRendered = ({
+        startIndex
+    }) => {
         if (this.state.activeIndex !== startIndex) {
             this.setState({ activeIndex: startIndex });
         }
@@ -130,12 +145,14 @@ export default class CityList extends Component {
                 <AutoSizer>
                     {({ width, height }) =>
                         <List
+                            ref={this.cityListComponent}
                             width={width}
                             height={height}
                             rowCount={this.state.cityIndex.length}
                             rowHeight={this.getRowHeight}
                             rowRenderer={this.rowRenderer}
                             onRowsRendered={this.onRowsRendered}
+                            scrollToAlignment="start"
                         />}
                 </AutoSizer>
                 {/* 右侧索引列表 */}
