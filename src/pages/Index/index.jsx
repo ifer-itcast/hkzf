@@ -42,6 +42,7 @@ export default class Index extends Component {
         isSwiperLoaded: false,
         groups: [],
         news: [],
+        currentCityName: '上海' // 当前城市名称
     };
     async getSwipers() {
         const { data } = await axios.get("http://localhost:8080/home/swiper");
@@ -68,6 +69,13 @@ export default class Index extends Component {
         this.getGroups();
         // 最新资讯
         this.getNews();
+
+        // 展示顶部导航城市信息
+        const myCity = new window.BMap.LocalCity();
+        myCity.get(async res => {
+            const { data } = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
+            this.setState({ currentCityName: data.body.label });
+        });
     }
     renderSwipers() {
         return this.state.swipers.map(item =>
@@ -150,7 +158,7 @@ export default class Index extends Component {
                                 onClick={() =>
                                     this.props.history.push("/citylist")}
                             >
-                                <span className="name">上海</span>
+                                <span className="name">{this.state.currentCityName}</span>
                                 <i className="iconfont icon-arrow" />
                             </div>
 
