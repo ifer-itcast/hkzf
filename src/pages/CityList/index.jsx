@@ -35,6 +35,9 @@ const formatCityIndex = letter => {
     }
 };
 
+const TITLE_HEIGHT = 36;
+const NAME_HEIGHT = 50;
+
 export default class CityList extends Component {
     state = {
         cityList: {},
@@ -90,6 +93,11 @@ export default class CityList extends Component {
             </div>
         );
     };
+    getRowHeight = ({ index }) => {
+        // 高 = 当前索引标题高度 + 一行城市高度 * 行数
+        const { cityList, cityIndex } = this.state;
+        return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT;
+    };
     render() {
         return (
             <div className="citylist">
@@ -107,7 +115,7 @@ export default class CityList extends Component {
                             width={width}
                             height={height}
                             rowCount={this.state.cityIndex.length}
-                            rowHeight={100}
+                            rowHeight={this.getRowHeight}
                             rowRenderer={this.rowRenderer}
                         />}
                 </AutoSizer>
