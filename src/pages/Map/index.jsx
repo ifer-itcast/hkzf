@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
 import NavHeader from "../../components/NavHeader";
-
 // import "./index.scss";
 import styles from "./index.module.css";
 
@@ -22,7 +22,6 @@ export default class Map extends Component {
     }
     initMap = () => {
         const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
-
         const map = new window.BMap.Map("container");
 
         // const point = new window.BMap.Point(116.404, 39.915);
@@ -32,32 +31,49 @@ export default class Map extends Component {
         // 将地址解析结果显示在地图上，并调整地图视野
         myGeo.getPoint(
             label,
-            point => {
+            async point => {
                 if (point) {
                     // 1. 初始化地图
                     map.centerAndZoom(point, 11);
                     // 2. 添加控件
                     map.addControl(new BMap.NavigationControl()); // 放大缩小
                     map.addControl(new BMap.ScaleControl()); // 比例尺
-                    // 3. 创建文本覆盖物
-                    const opts = {
-                        position: point, // 指定文本标注所在的地理位置
-                        offset: new BMap.Size(-35, -35), // 设置文本偏移量
-                    };
-                    // 设置 setContent 后，第一个参数中设置的文本内容就失效了，直接清空即可
-                    const label = new BMap.Label("", opts); // 创建文本标注对象
-                    // 4. 创建房源覆盖物
-                    label.setContent(`
-                        <div class="${styles.bubble}">
-                            <p class="${styles.name}">浦东</p>
-                            <p>99套</p>
-                        </div>
-                    `);
-                    label.setStyle(labelStyle);
-                    label.addEventListener("click", () => {
-                        console.log("房源覆盖物被点击了");
+
+                    const { data } = await axios.get(
+                        `http://localhost:8080/area/map?id=${value}`
+                    );
+                    data.body.forEach(item => {
+                        // 3. 创建文本覆盖物
+                        const {
+                            coord: { longitude, latitude },
+                            label: areaName,
+                            count,
+                            value,
+                        } = item;
+                        const areaPoint = new BMap.Point(longitude, latitude);
+                        const opts = {
+                            position: areaPoint, // 指定文本标注所在的地理位置
+                            offset: new BMap.Size(-35, -35), // 设置文本偏移量
+                        };
+                        // 设置 setContent 后，第一个参数中设置的文本内容就失效了，直接清空即可
+                        const label = new BMap.Label("", opts); // 创建文本标注对象
+                        label.id = value;
+                        // 4. 创建房源覆盖物
+                        label.setContent(`
+                            <div class="${styles.bubble}">
+                                <p class="${styles.name}">${areaName}</p>
+                                <p>${count}套</p>
+                            </div>
+                        `);
+                        label.setStyle(labelStyle);
+                        label.addEventListener("click", () => {
+                            map.centerAndZoom(areaPoint, 13);
+                            setTimeout(() => {
+                                map.clearOverlays();
+                            });
+                        });
+                        map.addOverlay(label);
                     });
-                    map.addOverlay(label);
                 }
             },
             label
