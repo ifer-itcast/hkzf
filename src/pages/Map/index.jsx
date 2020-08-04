@@ -28,6 +28,16 @@ export default class Map extends Component {
                     // 2. 添加控件
                     map.addControl(new BMap.NavigationControl()); // 放大缩小
                     map.addControl(new BMap.ScaleControl()); // 比例尺
+                    // 3. 创建文本覆盖物
+                    const opts = {
+                        position: point, // 指定文本标注所在的地理位置
+                        offset: new BMap.Size(30, -30), // 设置文本偏移量
+                    };
+                    const label = new BMap.Label("文本覆盖物", opts); // 创建文本标注对象
+                    label.setStyle({
+                        color: "red",
+                    });
+                    map.addOverlay(label);
                 }
             },
             label
