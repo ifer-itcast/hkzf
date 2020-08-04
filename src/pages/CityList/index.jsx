@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { NavBar } from "antd-mobile";
 import axios from "axios";
 
+import { getCurrentCity } from '../../utils';
+
 import "./index.scss";
 
 const formatCityData = list => {
@@ -35,6 +37,12 @@ export default class CityList extends Component {
         cityList['hot'] = hotListRes.body;
         // 将索引添加到 cityIndex 中
         cityIndex.unshift('hot');
+        
+        // 3. 获取当前定位城市
+        const curCity = await getCurrentCity();
+        cityList['#'] = [curCity];
+        cityIndex.unshift('#');
+
         console.log(cityList, cityIndex);
     }
     render() {

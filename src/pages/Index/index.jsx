@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Carousel, Flex, Grid, WingBlank } from "antd-mobile";
 import axios from "axios";
 
+import { getCurrentCity } from '../../utils';
+
 import nav1 from "../../assets/images/nav-1.png";
 import nav2 from "../../assets/images/nav-2.png";
 import nav3 from "../../assets/images/nav-3.png";
@@ -62,7 +64,7 @@ export default class Index extends Component {
         });
         this.setState({ news: data.body });
     }
-    componentDidMount() {
+    async componentDidMount() {
         // 获取轮播图
         this.getSwipers();
         // 获取租房小组
@@ -71,11 +73,13 @@ export default class Index extends Component {
         this.getNews();
 
         // 展示顶部导航城市信息
-        const myCity = new window.BMap.LocalCity();
+        /* const myCity = new window.BMap.LocalCity();
         myCity.get(async res => {
             const { data } = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
             this.setState({ currentCityName: data.body.label });
-        });
+        }); */
+        const curCity = await getCurrentCity();
+        this.setState({ currentCityName: curCity.label });
     }
     renderSwipers() {
         return this.state.swipers.map(item =>
