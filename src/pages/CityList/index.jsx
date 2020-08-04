@@ -24,10 +24,17 @@ export default class CityList extends Component {
         this.getCityList();
     }
     async getCityList() {
-        const { data } = await axios.get(
+        // 1. 城市列表数据
+        const { data: cityListRes } = await axios.get(
             "http://localhost:8080/area/city?level=1"
         );
-        const { cityList, cityIndex } = formatCityData(data.body);
+        const { cityList, cityIndex } = formatCityData(cityListRes.body);
+        // 2. 热门城市数据
+        const { data: hotListRes } = await axios.get("http://localhost:8080/area/hot");
+        // 将数据添加到 cityList 中
+        cityList['hot'] = hotListRes.body;
+        // 将索引添加到 cityIndex 中
+        cityIndex.unshift('hot');
         console.log(cityList, cityIndex);
     }
     render() {
