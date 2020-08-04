@@ -5,6 +5,17 @@ import NavHeader from "../../components/NavHeader";
 import styles from "./index.module.css";
 
 const BMap = window.BMap;
+
+// 覆盖物样式，在房源覆盖物外面，和它一样大
+const labelStyle = {
+    cursor: "pointer",
+    border: "0px solid rgb(255, 0, 0)",
+    padding: "0px",
+    whiteSpace: "nowrap",
+    fontSize: "12px",
+    color: "rgb(255, 255, 255)",
+    textAlign: "center",
+};
 export default class Map extends Component {
     componentDidMount() {
         this.initMap();
@@ -31,11 +42,20 @@ export default class Map extends Component {
                     // 3. 创建文本覆盖物
                     const opts = {
                         position: point, // 指定文本标注所在的地理位置
-                        offset: new BMap.Size(30, -30), // 设置文本偏移量
+                        offset: new BMap.Size(-35, -35), // 设置文本偏移量
                     };
-                    const label = new BMap.Label("文本覆盖物", opts); // 创建文本标注对象
-                    label.setStyle({
-                        color: "red",
+                    // 设置 setContent 后，第一个参数中设置的文本内容就失效了，直接清空即可
+                    const label = new BMap.Label("", opts); // 创建文本标注对象
+                    // 4. 创建房源覆盖物
+                    label.setContent(`
+                        <div class="${styles.bubble}">
+                            <p class="${styles.name}">浦东</p>
+                            <p>99套</p>
+                        </div>
+                    `);
+                    label.setStyle(labelStyle);
+                    label.addEventListener("click", () => {
+                        console.log("房源覆盖物被点击了");
                     });
                     map.addOverlay(label);
                 }
