@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { NavBar, Toast } from "antd-mobile";
+import { Toast } from "antd-mobile";
 import axios from "axios";
 
 import { List, AutoSizer } from "react-virtualized";
 
 import { getCurrentCity } from "../../utils";
+import NavHeader from '../../components/NavHeader';
 
 import "./index.scss";
 
@@ -145,14 +146,15 @@ export default class CityList extends Component {
     render() {
         return (
             <div className="citylist">
-                <NavBar
+                {/* <NavBar
                     className="navbar"
                     mode="light"
                     icon={<i className="iconfont icon-back" />}
                     onLeftClick={() => this.props.history.go(-1)}
                 >
                     城市选择
-                </NavBar>
+                </NavBar> */}
+                <NavHeader>城市选择</NavHeader>
                 <AutoSizer>
                     {({ width, height }) =>
                         <List
