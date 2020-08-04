@@ -7,7 +7,7 @@ import nav2 from "../../assets/images/nav-2.png";
 import nav3 from "../../assets/images/nav-3.png";
 import nav4 from "../../assets/images/nav-4.png";
 
-import "./index.css";
+import "./index.scss";
 
 const navs = [
     {
@@ -40,13 +40,23 @@ export default class Index extends Component {
     state = {
         swipers: [],
         isSwiperLoaded: false,
+        groups: [],
     };
     async getSwipers() {
         const { data } = await axios.get("http://localhost:8080/home/swiper");
         this.setState({ swipers: data.body, isSwiperLoaded: true });
     }
+    async getGroups() {
+        const { data } = await axios.get("http://localhost:8080/home/groups", {
+            params: "AREA%7C88cff55c-aaa4-e2e0",
+        });
+        this.setState({ groups: data.body });
+    }
     componentDidMount() {
+        // 获取轮播图
         this.getSwipers();
+        // 获取租房小组
+        this.getGroups();
     }
     renderSwipers() {
         return this.state.swipers.map(item =>
