@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 // 导入样式
 import "./index.scss";
 
-function SearchHeader({ history, cityName }) {
+function SearchHeader({ history, cityName, className }) {
     return (
-        <Flex className="search-box">
+        <Flex className={["search-box", className || ""].join(" ")}>
             {/* 左侧白色区域 */}
             <Flex className="search">
                 {/* 位置 */}
