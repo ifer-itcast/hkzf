@@ -4,6 +4,9 @@
     padding: 0;
     touch-action: pan-y;
 }
+h1 {
+    margin: 0;
+}
 
 html,
 body {

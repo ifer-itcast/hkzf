@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import NavHeader from "../../components/NavHeader";
 // import "./index.scss";
 import styles from "./index.module.css";
@@ -17,6 +18,10 @@ const labelStyle = {
     textAlign: "center",
 };
 export default class Map extends Component {
+    state = {
+        housesList: [], // 小区下的房源列表
+        isShowList: false, // 表示是否展示房源列表
+    };
     componentDidMount() {
         this.initMap();
     }
@@ -171,15 +176,70 @@ export default class Map extends Component {
         `);
         label.setStyle(labelStyle);
         label.addEventListener("click", () => {
-            console.log(1);
+            this.getHouseList(id);
         });
         this.map.addOverlay(label);
+    }
+    getHouseList = async id => {
+        const { data } = await axios.get(`http://localhost:8080/houses?cityId=${id}`);
+        this.setState({ housesList: data.body.list, isShowList: true });
     }
     render() {
         return (
             <div className={styles.map}>
                 <NavHeader>地图找房</NavHeader>
                 <div id="container" className={styles.container} />
+                {/* 房源列表 */}
+                <div className={[styles.houseList, this.state.isShowList ? styles.show : ''].join(" ")}>
+                    <div className={styles.titleWrap}>
+                        <h1 className={styles.listTitle}>房屋列表</h1>
+                        <Link className={styles.titleMore} to="/home/list">
+                            更多房源
+                        </Link>
+                    </div>
+
+                    <div className={styles.houseItems}>
+                        {/* 房屋结构 */}
+                        {this.state.housesList.map(item =>
+                            <div className={styles.house} key={item.houseCode}>
+                                <div className={styles.imgWrap}>
+                                    <img
+                                        className={styles.img}
+                                        src={`http://localhost:8080${item.houseImg}`}
+                                        alt=""
+                                    />
+                                </div>
+                                <div className={styles.content}>
+                                    <h3 className={styles.title}>
+                                        {item.title}
+                                    </h3>
+                                    <div className={styles.desc}>
+                                        {item.desc}
+                                    </div>
+                                    <div>
+                                        {item.tags.map(tag =>
+                                            <span
+                                                className={[
+                                                    styles.tag,
+                                                    styles.tag1,
+                                                ].join(" ")}
+                                                key={tag}
+                                            >
+                                                {tag}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className={styles.price}>
+                                        <span className={styles.priceNum}>
+                                            {item.price}
+                                        </span>{" "}
+                                        元/月
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         );
     }
