@@ -3,6 +3,7 @@ import { Carousel, Flex, Grid, WingBlank } from "antd-mobile";
 import axios from "axios";
 
 import { getCurrentCity } from '../../utils';
+import { BASE_URL } from '../../utils/url';
 
 import nav1 from "../../assets/images/nav-1.png";
 import nav2 from "../../assets/images/nav-2.png";
@@ -47,17 +48,17 @@ export default class Index extends Component {
         currentCityName: '上海' // 当前城市名称
     };
     async getSwipers() {
-        const { data } = await axios.get("http://localhost:8080/home/swiper");
+        const { data } = await axios.get(`${BASE_URL}/home/swiper`);
         this.setState({ swipers: data.body, isSwiperLoaded: true });
     }
     async getGroups() {
-        const { data } = await axios.get("http://localhost:8080/home/groups", {
+        const { data } = await axios.get(`${BASE_URL}/home/groups`, {
             params: "AREA%7C88cff55c-aaa4-e2e0",
         });
         this.setState({ groups: data.body });
     }
     async getNews() {
-        const { data } = await axios.get("http://localhost:8080/home/news", {
+        const { data } = await axios.get(`${BASE_URL}/home/news`, {
             params: {
                 area: "AREA%7C88cff55c-aaa4-e2e0",
             },
@@ -75,7 +76,7 @@ export default class Index extends Component {
         // 展示顶部导航城市信息
         /* const myCity = new window.BMap.LocalCity();
         myCity.get(async res => {
-            const { data } = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
+            const { data } = await axios.get(`${BASE_URL}/area/info?name=${res.name}`);
             this.setState({ currentCityName: data.body.label });
         }); */
         const curCity = await getCurrentCity();
@@ -93,7 +94,7 @@ export default class Index extends Component {
                 }}
             >
                 <img
-                    src={`http://localhost:8080${item.imgSrc}`}
+                    src={`${BASE_URL}${item.imgSrc}`}
                     alt=""
                     style={{
                         width: "100%",
@@ -122,7 +123,7 @@ export default class Index extends Component {
                 <div className="imgwrap">
                     <img
                         className="img"
-                        src={`http://localhost:8080${item.imgSrc}`}
+                        src={`${BASE_URL}${item.imgSrc}`}
                         alt=""
                     />
                 </div>
@@ -214,7 +215,7 @@ export default class Index extends Component {
                                     </span>
                                 </div>
                                 <img
-                                    src={`http://localhost:8080${item.imgSrc}`}
+                                    src={`${BASE_URL}${item.imgSrc}`}
                                     alt=""
                                 />
                             </Flex>}

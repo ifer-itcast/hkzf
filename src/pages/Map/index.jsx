@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Toast } from 'antd-mobile';
+import { BASE_URL } from '../../utils/url';
 import NavHeader from "../../components/NavHeader";
 // import "./index.scss";
 import styles from "./index.module.css";
@@ -98,7 +99,7 @@ export default class Map extends Component {
         try {
             Toast.loading('加载中...', 0, null, false);
             const { data } = await axios.get(
-                `http://localhost:8080/area/map?id=${id}`
+                `${BASE_URL}/area/map?id=${id}`
             );
             Toast.hide();
             // #2
@@ -201,7 +202,7 @@ export default class Map extends Component {
         try {
             Toast.loading('加载中...', 0, null, false);
             const { data } = await axios.get(
-                `http://localhost:8080/houses?cityId=${id}`
+                `${BASE_URL}/houses?cityId=${id}`
             );
             Toast.hide();
             this.setState({ housesList: data.body.list, isShowList: true });
@@ -215,7 +216,7 @@ export default class Map extends Component {
                 <div className={styles.imgWrap}>
                     <img
                         className={styles.img}
-                        src={`http://localhost:8080${item.houseImg}`}
+                        src={BASE_URL+item.houseImg}
                         alt=""
                     />
                 </div>
