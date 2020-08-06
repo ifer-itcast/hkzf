@@ -23,6 +23,7 @@ export default class Map extends Component {
     initMap = () => {
         const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
         const map = new window.BMap.Map("container");
+        this.map = map;
 
         // const point = new window.BMap.Point(116.404, 39.915);
         // map.centerAndZoom(point, 15);
@@ -39,7 +40,8 @@ export default class Map extends Component {
                     map.addControl(new BMap.NavigationControl()); // 放大缩小
                     map.addControl(new BMap.ScaleControl()); // 比例尺
 
-                    const { data } = await axios.get(
+                    this.renderOverlays(value);
+                    /* const { data } = await axios.get(
                         `http://localhost:8080/area/map?id=${value}`
                     );
                     data.body.forEach(item => {
@@ -73,12 +75,42 @@ export default class Map extends Component {
                             });
                         });
                         map.addOverlay(label);
-                    });
+                    }); */
                 }
             },
             label
         );
     };
+
+    // #1
+    async renderOverlays(id) {
+        const { data } = await axios.get(
+            `http://localhost:8080/area/map?id=${id}`
+        );
+        // #2
+        const { nextZoom, type } = this.getTypeAndZoom();
+        data.body.forEach(item => {
+            // #3 创建覆盖物
+            this.createOverlays(item, nextZoom, type);
+        });
+    }
+    createOverlays() {}
+    getTypeAndZoom() {
+        const zoom = this.map.getZoom();
+        let nextZoom, type;
+        if (zoom >= 10 && zoom < 12) {
+            // 区
+            nextZoom = 13;
+            type = "circle";
+        } else if (zoom >= 12 && zoom < 14) {
+            // 镇
+            nextZoom = 15;
+            type = "circle";
+        } else if (zoom >= 14 && zoom < 16) {
+            type = "rect";
+        }
+        return { nextZoom, type };
+    }
     render() {
         return (
             <div className={styles.map}>
