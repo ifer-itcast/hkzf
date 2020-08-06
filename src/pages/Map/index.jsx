@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { Toast } from 'antd-mobile';
 import { BASE_URL } from '../../utils/url';
+import { API } from '../../utils/api';
 import NavHeader from "../../components/NavHeader";
 // import "./index.scss";
 import styles from "./index.module.css";
@@ -48,8 +48,8 @@ export default class Map extends Component {
                     map.addControl(new BMap.ScaleControl()); // 比例尺
 
                     this.renderOverlays(value);
-                    /* const { data } = await axios.get(
-                        `http://localhost:8080/area/map?id=${value}`
+                    /* const { data } = await API.get(
+                        `/area/map?id=${value}`
                     );
                     data.body.forEach(item => {
                         // 3. 创建文本覆盖物
@@ -98,8 +98,8 @@ export default class Map extends Component {
     async renderOverlays(id) {
         try {
             Toast.loading('加载中...', 0, null, false);
-            const { data } = await axios.get(
-                `${BASE_URL}/area/map?id=${id}`
+            const { data } = await API.get(
+                `/area/map?id=${id}`
             );
             Toast.hide();
             // #2
@@ -201,8 +201,8 @@ export default class Map extends Component {
     getHouseList = async id => {
         try {
             Toast.loading('加载中...', 0, null, false);
-            const { data } = await axios.get(
-                `${BASE_URL}/houses?cityId=${id}`
+            const { data } = await API.get(
+                `/houses?cityId=${id}`
             );
             Toast.hide();
             this.setState({ housesList: data.body.list, isShowList: true });

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Carousel, Flex, Grid, WingBlank } from "antd-mobile";
-import axios from "axios";
-
 import { getCurrentCity } from '../../utils';
 import { BASE_URL } from '../../utils/url';
+import { API } from '../../utils/api';
 
 import nav1 from "../../assets/images/nav-1.png";
 import nav2 from "../../assets/images/nav-2.png";
@@ -48,17 +47,17 @@ export default class Index extends Component {
         currentCityName: '上海' // 当前城市名称
     };
     async getSwipers() {
-        const { data } = await axios.get(`${BASE_URL}/home/swiper`);
+        const { data } = await API.get(`/home/swiper`);
         this.setState({ swipers: data.body, isSwiperLoaded: true });
     }
     async getGroups() {
-        const { data } = await axios.get(`${BASE_URL}/home/groups`, {
+        const { data } = await API.get(`/home/groups`, {
             params: "AREA%7C88cff55c-aaa4-e2e0",
         });
         this.setState({ groups: data.body });
     }
     async getNews() {
-        const { data } = await axios.get(`${BASE_URL}/home/news`, {
+        const { data } = await API.get(`/home/news`, {
             params: {
                 area: "AREA%7C88cff55c-aaa4-e2e0",
             },
