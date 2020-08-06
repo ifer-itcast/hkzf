@@ -94,7 +94,22 @@ export default class Map extends Component {
             this.createOverlays(item, nextZoom, type);
         });
     }
-    createOverlays() {}
+    createOverlays(data, nextZoom, type) {
+        const {
+            coord: { longitude, latitude },
+            label: areaName,
+            count,
+            value,
+        } = data;
+        const areaPoint = new BMap.Point(longitude, latitude);
+        if (type === "circle") {
+            // 区、镇
+            this.createCircle(areaPoint, areaName, count, value, nextZoom);
+        } else {
+            // 小区
+            this.createRect(areaPoint, areaName, count, value);
+        }
+    }
     getTypeAndZoom() {
         const zoom = this.map.getZoom();
         let nextZoom, type;
@@ -111,6 +126,8 @@ export default class Map extends Component {
         }
         return { nextZoom, type };
     }
+    createCircle() {}
+    createRect() {}
     render() {
         return (
             <div className={styles.map}>
