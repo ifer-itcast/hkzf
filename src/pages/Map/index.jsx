@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Toast } from 'antd-mobile';
 import NavHeader from "../../components/NavHeader";
 // import "./index.scss";
 import styles from "./index.module.css";
@@ -94,15 +95,21 @@ export default class Map extends Component {
 
     // #1
     async renderOverlays(id) {
-        const { data } = await axios.get(
-            `http://localhost:8080/area/map?id=${id}`
-        );
-        // #2
-        const { nextZoom, type } = this.getTypeAndZoom();
-        data.body.forEach(item => {
-            // #3 创建覆盖物
-            this.createOverlays(item, nextZoom, type);
-        });
+        try {
+            Toast.loading('加载中...', 0, null, false);
+            const { data } = await axios.get(
+                `http://localhost:8080/area/map?id=${id}`
+            );
+            Toast.hide();
+            // #2
+            const { nextZoom, type } = this.getTypeAndZoom();
+            data.body.forEach(item => {
+                // #3 创建覆盖物
+                this.createOverlays(item, nextZoom, type);
+            });
+        } catch(e) {
+            Toast.hide();
+        }
     }
     createOverlays(data, nextZoom, type) {
         const {
@@ -191,10 +198,16 @@ export default class Map extends Component {
         this.map.addOverlay(label);
     }
     getHouseList = async id => {
-        const { data } = await axios.get(
-            `http://localhost:8080/houses?cityId=${id}`
-        );
-        this.setState({ housesList: data.body.list, isShowList: true });
+        try {
+            Toast.loading('加载中...', 0, null, false);
+            const { data } = await axios.get(
+                `http://localhost:8080/houses?cityId=${id}`
+            );
+            Toast.hide();
+            this.setState({ housesList: data.body.list, isShowList: true });
+        } catch(e) {
+            Toast.hide();
+        }
     };
     renderHouseList = () => {
         return this.state.housesList.map(item =>
