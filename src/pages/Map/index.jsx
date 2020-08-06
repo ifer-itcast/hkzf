@@ -153,7 +153,28 @@ export default class Map extends Component {
         });
         this.map.addOverlay(label);
     }
-    createRect() {}
+    createRect(point, name, count, id) {
+        const opts = {
+            position: point, // 指定文本标注所在的地理位置
+            offset: new BMap.Size(-50, -28), // 设置文本偏移量
+        };
+        // 设置 setContent 后，第一个参数中设置的文本内容就失效了，直接清空即可
+        const label = new BMap.Label("", opts); // 创建文本标注对象
+        label.id = id;
+        // 4. 创建房源覆盖物
+        label.setContent(`
+            <div class="${styles.rect}">
+                <span class="${styles.housename}">${name}</span>
+                <span class="${styles.housenum}">${count}套</span>
+                <i class="${styles.arrow}"></i>
+            </div>
+        `);
+        label.setStyle(labelStyle);
+        label.addEventListener("click", () => {
+            console.log(1);
+        });
+        this.map.addOverlay(label);
+    }
     render() {
         return (
             <div className={styles.map}>
