@@ -85,6 +85,11 @@ export default class Map extends Component {
             },
             label
         );
+        map.addEventListener('movestart', () => {
+            if (this.state.isShowList) {
+                this.setState({ isShowList: false });
+            }
+        });
     };
 
     // #1
@@ -175,8 +180,13 @@ export default class Map extends Component {
             </div>
         `);
         label.setStyle(labelStyle);
-        label.addEventListener("click", () => {
+        label.addEventListener("click", e => {
             this.getHouseList(id);
+            const target = e.changedTouches[0];
+            this.map.panBy(
+                window.innerWidth / 2 - target.clientX,
+                (window.innerHeight - 330) / 2 - target.clientY
+            );
         });
         this.map.addOverlay(label);
     }
@@ -205,12 +215,13 @@ export default class Map extends Component {
                     </div>
                     <div>
                         {item.tags.map((tag, index) => {
-                            const tagClass = 'tag' + (index + 1);
+                            const tagClass = "tag" + (index + 1);
                             return (
                                 <span
-                                    className={[styles.tag, styles[tagClass]].join(
-                                        " "
-                                    )}
+                                    className={[
+                                        styles.tag,
+                                        styles[tagClass],
+                                    ].join(" ")}
                                     key={tag}
                                 >
                                     {tag}
