@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import { TabBar } from "antd-mobile";
 
+import "./index.css";
+
+// 可以让每一个组件的样式去覆盖当前的 index.css，注意顺序
 // 首页
 import Index from "../Index";
 // 房列表
@@ -10,8 +13,6 @@ import HouseList from "../HouseList";
 import News from "../News";
 // 我的
 import Profile from "../Profile";
-
-import "./index.css";
 
 const tabItems = [
     {
