@@ -126,7 +126,33 @@ export default class Map extends Component {
         }
         return { nextZoom, type };
     }
-    createCircle() {}
+    createCircle(point, name, count, id, zoom) {
+        const opts = {
+            position: point, // 指定文本标注所在的地理位置
+            offset: new BMap.Size(-35, -35), // 设置文本偏移量
+        };
+        // 设置 setContent 后，第一个参数中设置的文本内容就失效了，直接清空即可
+        const label = new BMap.Label("", opts); // 创建文本标注对象
+        label.id = id;
+        // 4. 创建房源覆盖物
+        label.setContent(`
+            <div class="${styles.bubble}">
+                <p class="${styles.name}">${name}</p>
+                <p>${count}套</p>
+            </div>
+        `);
+        label.setStyle(labelStyle);
+        label.addEventListener("click", () => {
+            // # mark
+            this.renderOverlays(id);
+
+            this.map.centerAndZoom(point, zoom);
+            setTimeout(() => {
+                this.map.clearOverlays();
+            });
+        });
+        this.map.addOverlay(label);
+    }
     createRect() {}
     render() {
         return (
