@@ -4,12 +4,14 @@ import { getCurrentCity } from '../../utils';
 import { BASE_URL } from '../../utils/url';
 import { API } from '../../utils/api';
 
+import "./index.scss";
+
 import nav1 from "../../assets/images/nav-1.png";
 import nav2 from "../../assets/images/nav-2.png";
 import nav3 from "../../assets/images/nav-3.png";
 import nav4 from "../../assets/images/nav-4.png";
 
-import "./index.scss";
+import SearchHeader from '../../components/SearchHeader';
 
 const navs = [
     {
@@ -153,7 +155,7 @@ export default class Index extends Component {
                         </Carousel>}
 
                     {/* Index 组件中轮播图中的顶部导航 */}
-                    <Flex className="search-box">
+                    <Flex className="search-box" style={{display: "none"}}>
                         {/* 左 */}
                         <Flex className="search">
                             {/* 左 -> 左 */}
@@ -182,6 +184,7 @@ export default class Index extends Component {
                             onClick={() => this.props.history.push("/map")}
                         />
                     </Flex>
+                    <SearchHeader cityName={this.state.currentCityName}/>
                 </div>
 
                 {/* 导航 */}
