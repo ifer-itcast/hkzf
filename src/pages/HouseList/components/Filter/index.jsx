@@ -18,6 +18,7 @@ const titleSelectedStatus = {
 export default class Filter extends Component {
     state = {
         titleSelectedStatus,
+        openType: "", // 控制 FilterPicker 或 FilterMore 组件的展示或隐藏
     };
 
     // 点击标题菜单实现高亮
@@ -31,25 +32,42 @@ export default class Filter extends Component {
                     ...prevState.titleSelectedStatus,
                     [type]: true,
                 },
+                openType: type // 展示 FilterPicker 和 遮罩
             };
         });
     };
+    onCancel = () => {
+        this.setState({ openType: "" });
+    }
+    onSave = () => {
+        this.setState({ openType: "" });
+    }
 
     render() {
-        const { titleSelectedStatus } = this.state;
+        const { titleSelectedStatus, openType } = this.state;
 
         return (
             <div className={styles.root}>
-                {" "}{/* 前三个菜单的遮罩层 */} {/* <div className={styles.mask} /> */}
+                {/* 前三个菜单的遮罩层 */}
+                {openType === "area" ||
+                openType === "mode" ||
+                openType === "price"
+                    ? <div className={styles.mask} onClick={this.onCancel} />
+                    : null}
                 <div className={styles.content}>
-                    {" "}{/* 标题栏 */}{" "}
+                    {/* 标题栏 */}
                     <FilterTitle
                         titleSelectedStatus={titleSelectedStatus}
                         onClick={this.onTitleClick}
                     />
-                    {/* 前三个菜单对应的内容： */} {/* <FilterPicker /> */}
-                    {/* 最后一个菜单对应的内容： */} {/* <FilterMore /> */}{" "}
-                </div>{" "}
+                    {/* 前三个菜单对应的内容： */}
+                    {openType === "area" ||
+                    openType === "mode" ||
+                    openType === "price"
+                        ? <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />
+                        : null}
+                    {/* 最后一个菜单对应的内容： */} {/* <FilterMore /> */}
+                </div>
             </div>
         );
     }
