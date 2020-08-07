@@ -63,7 +63,7 @@ export default class Filter extends Component {
                 cols = 1;
                 break;
         }
-        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} />;
+        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} />;
     }
 
     // 点击标题菜单实现高亮
@@ -84,7 +84,9 @@ export default class Filter extends Component {
     onCancel = () => {
         this.setState({ openType: "" });
     };
-    onSave = () => {
+    onSave = (type, value) => {
+        // console.log(this.state.openType === type); // true
+        console.log(type, value);
         this.setState({ openType: "" });
     };
 
