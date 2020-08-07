@@ -92,6 +92,8 @@ export default class FilterPicker extends Component {
         value: this.props.defaultValue
     }
     render() {
+        // 外面不加 key 的话
+        // this.state.value 在第一次打开筛选条件时已经确定了，因为只有第一次会初始化组件中的 state，后续不会变化
         const { onCancel, onSave, data, cols, type } = this.props;
         return (
             <>
