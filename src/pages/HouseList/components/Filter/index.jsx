@@ -17,11 +17,19 @@ const titleSelectedStatus = {
     more: false,
 };
 
+const selectedValues = {
+    area: ["area", "null"],
+    mode: ["null"],
+    price: ["null"],
+    more: [],
+};
+
 export default class Filter extends Component {
     state = {
         titleSelectedStatus,
         openType: "", // 控制 FilterPicker 或 FilterMore 组件的展示或隐藏
         filtersData: {},
+        selectedValues,
     };
     componentDidMount() {
         this.getFiltersData();
@@ -39,7 +47,11 @@ export default class Filter extends Component {
         openType === "price"
             ? <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />
             : null; */
-        const { openType, filtersData: { area, subway, rentType, price } } = this.state;
+        const {
+            openType,
+            filtersData: { area, subway, rentType, price },
+            selectedValues,
+        } = this.state;
         if (
             openType !== "area" &&
             openType !== "mode" &&
@@ -49,21 +61,31 @@ export default class Filter extends Component {
         }
         let data = [];
         let cols = 3;
-        switch(openType) {
-            case 'area':
+        let defaultValue = selectedValues[openType];
+        switch (openType) {
+            case "area":
                 data = [area, subway];
                 cols = 3;
                 break;
-            case 'mode':
+            case "mode":
                 data = rentType;
                 cols = 1;
                 break;
-            case 'price':
+            case "price":
                 data = price;
                 cols = 1;
                 break;
         }
-        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} />;
+        return (
+            <FilterPicker
+                onCancel={this.onCancel}
+                onSave={this.onSave}
+                data={data}
+                cols={cols}
+                type={openType}
+                defaultValue={defaultValue}
+            />
+        );
     }
 
     // 点击标题菜单实现高亮
@@ -86,8 +108,13 @@ export default class Filter extends Component {
     };
     onSave = (type, value) => {
         // console.log(this.state.openType === type); // true
-        console.log(type, value);
-        this.setState({ openType: "" });
+        this.setState({
+            openType: "",
+            selectedValues: {
+                ...this.state.selectedValues,
+                [type]: value,
+            },
+        });
     };
 
     render() {
