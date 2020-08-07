@@ -4,6 +4,8 @@ import FilterTitle from "../FilterTitle";
 import FilterPicker from "../FilterPicker";
 import FilterMore from "../FilterMore";
 
+import { API } from "../../../../utils/api";
+
 import styles from "./index.module.css";
 
 // 标题高亮状态
@@ -19,7 +21,34 @@ export default class Filter extends Component {
     state = {
         titleSelectedStatus,
         openType: "", // 控制 FilterPicker 或 FilterMore 组件的展示或隐藏
+        filtersData: {},
     };
+    componentDidMount() {
+        this.getFiltersData();
+    }
+    async getFiltersData() {
+        // 获取当前定位城市 ID
+        const { value } = JSON.parse(localStorage.getItem("hkzf_city"));
+        const { data } = await API.get(`/houses/condition?id=${value}`);
+        this.setState({ filtersData: data.body });
+    }
+    renderFilterPicker() {
+        /* const { openType } = this.state;
+        return openType === "area" ||
+        openType === "mode" ||
+        openType === "price"
+            ? <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />
+            : null; */
+        const { openType } = this.state;
+        if (
+            openType !== "area" &&
+            openType !== "mode" &&
+            openType !== "price"
+        ) {
+            return null;
+        }
+        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />;
+    }
 
     // 点击标题菜单实现高亮
     // 注意：this指向的问题！！！
@@ -32,16 +61,16 @@ export default class Filter extends Component {
                     ...prevState.titleSelectedStatus,
                     [type]: true,
                 },
-                openType: type // 展示 FilterPicker 和 遮罩
+                openType: type, // 展示 FilterPicker 和 遮罩
             };
         });
     };
     onCancel = () => {
         this.setState({ openType: "" });
-    }
+    };
     onSave = () => {
         this.setState({ openType: "" });
-    }
+    };
 
     render() {
         const { titleSelectedStatus, openType } = this.state;
@@ -61,11 +90,15 @@ export default class Filter extends Component {
                         onClick={this.onTitleClick}
                     />
                     {/* 前三个菜单对应的内容： */}
-                    {openType === "area" ||
+                    {/* {openType === "area" ||
                     openType === "mode" ||
                     openType === "price"
-                        ? <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />
-                        : null}
+                        ? <FilterPicker
+                              onCancel={this.onCancel}
+                              onSave={this.onSave}
+                          />
+                        : null} */}
+                    {this.renderFilterPicker()}
                     {/* 最后一个菜单对应的内容： */} {/* <FilterMore /> */}
                 </div>
             </div>
