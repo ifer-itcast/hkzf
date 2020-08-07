@@ -39,7 +39,7 @@ export default class Filter extends Component {
         openType === "price"
             ? <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />
             : null; */
-        const { openType } = this.state;
+        const { openType, filtersData: { area, subway, rentType, price } } = this.state;
         if (
             openType !== "area" &&
             openType !== "mode" &&
@@ -47,7 +47,23 @@ export default class Filter extends Component {
         ) {
             return null;
         }
-        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} />;
+        let data = [];
+        let cols = 3;
+        switch(openType) {
+            case 'area':
+                data = [area, subway];
+                cols = 3;
+                break;
+            case 'mode':
+                data = rentType;
+                cols = 1;
+                break;
+            case 'price':
+                data = price;
+                cols = 1;
+                break;
+        }
+        return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} />;
     }
 
     // 点击标题菜单实现高亮
