@@ -78,6 +78,7 @@ export default class Filter extends Component {
         }
         return (
             <FilterPicker
+                key={openType}
                 onCancel={this.onCancel}
                 onSave={this.onSave}
                 data={data}
