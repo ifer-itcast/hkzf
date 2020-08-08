@@ -135,8 +135,29 @@ export default class Filter extends Component {
             };
         }); */
     };
-    onCancel = () => {
-        this.setState({ openType: "" });
+    onCancel = type => {
+        const { titleSelectedStatus, selectedValues } = this.state;
+        const newTitleSelectedStatus = { ...titleSelectedStatus };
+        const selectedVal = selectedValues[type];
+        console.log(selectedVal, 233)
+        if (
+            type === "area" &&
+            (selectedVal.length !== 2 || selectedVal[0] !== "area")
+        ) {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "mode" && selectedVal[0] !== "null") {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "price" && selectedVal[0] !== "null") {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "more" && selectedVal.length !== 0) {
+            newTitleSelectedStatus[type] = true;
+        } else {
+            newTitleSelectedStatus[type] = false;
+        }
+        this.setState({
+            openType: "",
+            titleSelectedStatus: newTitleSelectedStatus,
+        });
     };
     onSave = (type, value) => {
         // console.log(this.state.openType === type); // true
@@ -160,11 +181,8 @@ export default class Filter extends Component {
                 ...this.state.selectedValues,
                 [type]: value,
             },
-            titleSelectedStatus: newTitleSelectedStatus
+            titleSelectedStatus: newTitleSelectedStatus,
         });
-    };
-    onCancel = () => {
-        this.setState({ openType: "" });
     };
     renderFilterMore = () => {
         const {
@@ -196,7 +214,10 @@ export default class Filter extends Component {
                 {openType === "area" ||
                 openType === "mode" ||
                 openType === "price"
-                    ? <div className={styles.mask} onClick={this.onCancel} />
+                    ? <div
+                          className={styles.mask}
+                          onClick={() => this.onCancel(openType)}
+                      />
                     : null}
                 <div className={styles.content}>
                     {/* 标题栏 */}
