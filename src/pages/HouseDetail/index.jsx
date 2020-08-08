@@ -96,6 +96,9 @@ export default class HouseDetail extends Component {
     };
 
     componentDidMount() {
+        const { params } = this.props.match;
+        const { id } = params;
+        
         this.renderMap("天山星城", {
             latitude: "31.219228",
             longitude: "121.391768",

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Home from "./pages/Home";
 import CityList from "./pages/CityList";
 import Map from "./pages/Map";
+import HouseDetail from "./pages/HouseDetail";
 
 class App extends Component {
     render() {
@@ -18,6 +19,7 @@ class App extends Component {
                     <Route path="/home" component={Home} />
                     <Route path="/citylist" component={CityList} />
                     <Route path="/map" component={Map} />
+                    <Route path="/detail/:id" component={HouseDetail} />
                 </div>
             </Router>
         );
