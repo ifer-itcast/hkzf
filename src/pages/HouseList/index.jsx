@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import { Flex } from "antd-mobile";
-import { List, WindowScroller, AutoSizer } from "react-virtualized";
+import {
+    List,
+    WindowScroller,
+    AutoSizer,
+    InfiniteLoader,
+} from "react-virtualized";
 import HouseItem from "../../components/HouseItem";
 import { API } from "../../utils/api";
 import { BASE_URL } from "../../utils/url";
@@ -54,6 +59,16 @@ export default class HouseList extends Component {
             />
         );
     };
+    // 判断列表中的每一行是否加载完成
+    isRowLoaded = ({ index }) => {
+        return !!this.state.list[index];
+    };
+    // 加载更多
+    loadMoreRows = ({ startIndex, stopIndex }) => {
+        return new Promise(resolve => {
+            // 数据加载完成时调用 resolve 即可
+        });
+    };
     render() {
         return (
             <div>
@@ -70,22 +85,33 @@ export default class HouseList extends Component {
                 <Filter onFilter={this.onFilter} />
                 {/* 房屋列表 */}
                 <div className={styles.houseItems}>
-                    <WindowScroller>
-                        {({ height, isScrolling, scrollTop }) =>
-                            <AutoSizer>
-                                {({ width }) =>
-                                    <List
-                                        autoHeight // 设置高度为 WindowScroller 的高度
-                                        width={width}
-                                        height={height}
-                                        rowCount={this.state.count} // List列表项的行数
-                                        rowHeight={120} // 每一行的高度
-                                        rowRenderer={this.renderHouseList} // 渲染列表项中的每一行
-                                        isScrolling={isScrolling}
-                                        scrollTop={scrollTop}
-                                    />}
-                            </AutoSizer>}
-                    </WindowScroller>
+                    <InfiniteLoader
+                        isRowLoaded={this.isRowLoaded}
+                        loadMoreRows={this.loadMoreRows}
+                        rowCount={this.state.count}
+                    >
+                        {({ onRowsRendered, registerChild }) =>
+                            <WindowScroller>
+                                {({ height, isScrolling, scrollTop }) =>
+                                    <AutoSizer>
+                                        {({ width }) =>
+                                            <List
+                                                autoHeight // 设置高度为 WindowScroller 的高度
+                                                width={width}
+                                                height={height}
+                                                rowCount={this.state.count} // List列表项的行数
+                                                rowHeight={120} // 每一行的高度
+                                                rowRenderer={
+                                                    this.renderHouseList
+                                                } // 渲染列表项中的每一行
+                                                isScrolling={isScrolling}
+                                                scrollTop={scrollTop}
+                                                onRowsRendered={onRowsRendered}
+                                                registerChild={registerChild}
+                                            />}
+                                    </AutoSizer>}
+                            </WindowScroller>}
+                    </InfiniteLoader>
                 </div>
             </div>
         );
