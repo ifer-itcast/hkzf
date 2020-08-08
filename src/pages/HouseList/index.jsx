@@ -10,7 +10,7 @@ import HouseItem from "../../components/HouseItem";
 import SearchHeader from "../../components/SearchHeader";
 import Filter from "./components/Filter";
 import Sticky from "../../components/Sticky";
-import NoHouse from '../../components/NoHouse';
+import NoHouse from "../../components/NoHouse";
 import { API } from "../../utils/api";
 import { BASE_URL } from "../../utils/url";
 import styles from "./index.module.css";
@@ -22,12 +22,14 @@ export default class HouseList extends Component {
     state = {
         list: [],
         count: 0,
+        isLoading: false, // 数据是否加载中，设置为 true 也 ok
     };
     onFilter = filters => {
         this.filters = filters;
         this.onSearchHouseList();
     };
     async onSearchHouseList() {
+        this.setState({ isLoading: true });
         Toast.loading("加载中...", 0, null, false);
         const { data } = await API.get("/houses", {
             params: {
@@ -45,6 +47,7 @@ export default class HouseList extends Component {
         this.setState({
             list,
             count,
+            isLoading: false, // 数据是否加载中，否，加载完啦
         });
     }
     componentDidMount() {
@@ -99,10 +102,12 @@ export default class HouseList extends Component {
         });
     };
     renderList = () => {
-        const { count } = this.state;
-        if(count === 0) {
+        const { count, isLoading } = this.state;
+        // 核心：数据加载完成后再进行 count 的判断
+        if (count === 0 && !isLoading) {
             return <NoHouse>没有找到房源，请您换个搜索条件吧~</NoHouse>;
         }
+        // debugger;
         return (
             <InfiniteLoader
                 isRowLoaded={this.isRowLoaded}
