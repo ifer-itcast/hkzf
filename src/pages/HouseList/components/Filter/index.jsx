@@ -114,7 +114,8 @@ export default class Filter extends Component {
                 newTitleSelectedStatus[key] = true;
             } else if (key === "price" && selectedVal[0] !== "null") {
                 newTitleSelectedStatus[key] = true;
-            } else if (key === "more") {
+            } else if (key === "more" && selectedVal.length !== 0) {
+                newTitleSelectedStatus[key] = true;
             } else {
                 newTitleSelectedStatus[key] = false;
             }
@@ -139,12 +140,27 @@ export default class Filter extends Component {
     };
     onSave = (type, value) => {
         // console.log(this.state.openType === type); // true
+        const { titleSelectedStatus } = this.state;
+        const newTitleSelectedStatus = { ...titleSelectedStatus };
+        if (type === "area" && (value.length !== 2 || value[0] !== "area")) {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "mode" && value[0] !== "null") {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "price" && value[0] !== "null") {
+            newTitleSelectedStatus[type] = true;
+        } else if (type === "more" && value.length !== 0) {
+            newTitleSelectedStatus[type] = true;
+        } else {
+            newTitleSelectedStatus[type] = false;
+        }
+
         this.setState({
             openType: "",
             selectedValues: {
                 ...this.state.selectedValues,
                 [type]: value,
             },
+            titleSelectedStatus: newTitleSelectedStatus
         });
     };
     onCancel = () => {
