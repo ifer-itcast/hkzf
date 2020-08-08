@@ -40,7 +40,16 @@ export default class FilterMore extends Component {
             );
         });
     };
-
+    onCancel = () => {
+        // 取消按钮的事件处理
+        this.setState({
+            selectedValues: [],
+        });
+    };
+    onOk = () => {
+        const { type, onSave } = this.props;
+        onSave(type, this.state.selectedValues);
+    };
     render() {
         const {
             data: { roomType, oriented, floor, characteristic },
@@ -76,7 +85,12 @@ export default class FilterMore extends Component {
                 </div>
 
                 {/* 底部按钮 */}
-                <FilterFooter className={styles.footer} />
+                <FilterFooter
+                    className={styles.footer}
+                    cancelText="清除"
+                    onCancel={this.onCancel}
+                    onOk={this.onOk}
+                />
             </div>
         );
     }

@@ -156,7 +156,7 @@ export default class Filter extends Component {
             return null;
         }
         const data = { roomType, oriented, floor, characteristic };
-        return <FilterMore data={data} />;
+        return <FilterMore data={data} type={openType} onSave={this.onSave}/>;
     };
     render() {
         const { titleSelectedStatus, openType } = this.state;
