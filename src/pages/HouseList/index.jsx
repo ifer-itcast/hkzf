@@ -5,15 +5,19 @@ import SearchHeader from "../../components/SearchHeader";
 import Filter from "./components/Filter";
 import styles from "./index.module.css";
 
-const { label } = JSON.parse(localStorage.getItem("hkzf_city"));
+const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
 
 export default class HouseList extends Component {
+    filters = {};
+    state = {
+        list: [],
+        count: 0,
+    };
     onFilter = filters => {
         this.filters = filters;
         this.onSearchHouseList();
     };
     async onSearchHouseList() {
-        const { value } = JSON.parse(localStorage.getItem("hkzf_city"));
         const { data } = await API.get("/houses", {
             params: {
                 cityId: value,
@@ -22,7 +26,14 @@ export default class HouseList extends Component {
                 end: 20,
             },
         });
-        console.log(data);
+        const { list, count } = data.body;
+        this.setState({
+            list,
+            count,
+        });
+    }
+    componentDidMount() {
+        this.onSearchHouseList();
     }
     render() {
         return (
