@@ -7,10 +7,11 @@ import {
     InfiniteLoader,
 } from "react-virtualized";
 import HouseItem from "../../components/HouseItem";
-import { API } from "../../utils/api";
-import { BASE_URL } from "../../utils/url";
 import SearchHeader from "../../components/SearchHeader";
 import Filter from "./components/Filter";
+import Sticky from "../../components/Sticky";
+import { API } from "../../utils/api";
+import { BASE_URL } from "../../utils/url";
 import styles from "./index.module.css";
 
 const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
@@ -104,7 +105,9 @@ export default class HouseList extends Component {
                         className={styles.searchHeader}
                     />
                 </Flex>
-                <Filter onFilter={this.onFilter} />
+                <Sticky>
+                    <Filter onFilter={this.onFilter} />
+                </Sticky>
                 {/* 房屋列表 */}
                 <div className={styles.houseItems}>
                     <InfiniteLoader
