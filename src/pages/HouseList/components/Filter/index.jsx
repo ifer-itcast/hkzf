@@ -115,14 +115,13 @@ export default class Filter extends Component {
             } else if (key === "price" && selectedVal[0] !== "null") {
                 newTitleSelectedStatus[key] = true;
             } else if (key === "more") {
-
             } else {
                 newTitleSelectedStatus[key] = false;
             }
         });
         this.setState({
             openType: type,
-            titleSelectedStatus: newTitleSelectedStatus
+            titleSelectedStatus: newTitleSelectedStatus,
         });
         /* this.setState(prevState => {
             return {
@@ -148,7 +147,17 @@ export default class Filter extends Component {
             },
         });
     };
-
+    renderFilterMore = () => {
+        const {
+            openType,
+            filtersData: { roomType, oriented, floor, characteristic },
+        } = this.state;
+        if (openType !== "more") {
+            return null;
+        }
+        const data = { roomType, oriented, floor, characteristic };
+        return <FilterMore data={data} />;
+    };
     render() {
         const { titleSelectedStatus, openType } = this.state;
 
@@ -176,7 +185,8 @@ export default class Filter extends Component {
                           />
                         : null} */}
                     {this.renderFilterPicker()}
-                    {/* 最后一个菜单对应的内容： */} {/* <FilterMore /> */}
+                    {/* 最后一个菜单对应的内容： */}
+                    {this.renderFilterMore()}
                 </div>
             </div>
         );
