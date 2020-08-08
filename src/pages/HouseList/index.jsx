@@ -105,7 +105,7 @@ export default class HouseList extends Component {
                         className={styles.searchHeader}
                     />
                 </Flex>
-                <Sticky>
+                <Sticky height={40}>
                     <Filter onFilter={this.onFilter} />
                 </Sticky>
                 {/* 房屋列表 */}
