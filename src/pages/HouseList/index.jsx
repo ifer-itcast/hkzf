@@ -10,6 +10,7 @@ import HouseItem from "../../components/HouseItem";
 import SearchHeader from "../../components/SearchHeader";
 import Filter from "./components/Filter";
 import Sticky from "../../components/Sticky";
+import NoHouse from '../../components/NoHouse';
 import { API } from "../../utils/api";
 import { BASE_URL } from "../../utils/url";
 import styles from "./index.module.css";
@@ -27,7 +28,7 @@ export default class HouseList extends Component {
         this.onSearchHouseList();
     };
     async onSearchHouseList() {
-        Toast.loading('加载中...', 0, null, false);
+        Toast.loading("加载中...", 0, null, false);
         const { data } = await API.get("/houses", {
             params: {
                 cityId: value,
@@ -97,6 +98,39 @@ export default class HouseList extends Component {
             });
         });
     };
+    renderList = () => {
+        const { count } = this.state;
+        if(count === 0) {
+            return <NoHouse>没有找到房源，请您换个搜索条件吧~</NoHouse>;
+        }
+        return (
+            <InfiniteLoader
+                isRowLoaded={this.isRowLoaded}
+                loadMoreRows={this.loadMoreRows}
+                rowCount={count}
+            >
+                {({ onRowsRendered, registerChild }) =>
+                    <WindowScroller>
+                        {({ height, isScrolling, scrollTop }) =>
+                            <AutoSizer>
+                                {({ width }) =>
+                                    <List
+                                        autoHeight // 设置高度为 WindowScroller 的高度
+                                        width={width}
+                                        height={height}
+                                        rowCount={count} // List列表项的行数
+                                        rowHeight={120} // 每一行的高度
+                                        rowRenderer={this.renderHouseList} // 渲染列表项中的每一行
+                                        isScrolling={isScrolling}
+                                        scrollTop={scrollTop}
+                                        onRowsRendered={onRowsRendered}
+                                        registerChild={registerChild}
+                                    />}
+                            </AutoSizer>}
+                    </WindowScroller>}
+            </InfiniteLoader>
+        );
+    };
     render() {
         return (
             <div>
@@ -115,33 +149,7 @@ export default class HouseList extends Component {
                 </Sticky>
                 {/* 房屋列表 */}
                 <div className={styles.houseItems}>
-                    <InfiniteLoader
-                        isRowLoaded={this.isRowLoaded}
-                        loadMoreRows={this.loadMoreRows}
-                        rowCount={this.state.count}
-                    >
-                        {({ onRowsRendered, registerChild }) =>
-                            <WindowScroller>
-                                {({ height, isScrolling, scrollTop }) =>
-                                    <AutoSizer>
-                                        {({ width }) =>
-                                            <List
-                                                autoHeight // 设置高度为 WindowScroller 的高度
-                                                width={width}
-                                                height={height}
-                                                rowCount={this.state.count} // List列表项的行数
-                                                rowHeight={120} // 每一行的高度
-                                                rowRenderer={
-                                                    this.renderHouseList
-                                                } // 渲染列表项中的每一行
-                                                isScrolling={isScrolling}
-                                                scrollTop={scrollTop}
-                                                onRowsRendered={onRowsRendered}
-                                                registerChild={registerChild}
-                                            />}
-                                    </AutoSizer>}
-                            </WindowScroller>}
-                    </InfiniteLoader>
+                    {this.renderList()}
                 </div>
             </div>
         );
