@@ -13,9 +13,10 @@ import Sticky from "../../components/Sticky";
 import NoHouse from "../../components/NoHouse";
 import { API } from "../../utils/api";
 import { BASE_URL } from "../../utils/url";
+import { getCurrentCity } from "../../utils";
 import styles from "./index.module.css";
 
-const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
+// const { label, value } = JSON.parse(localStorage.getItem("hkzf_city"));
 
 export default class HouseList extends Component {
     filters = {};
@@ -24,6 +25,8 @@ export default class HouseList extends Component {
         count: 0,
         isLoading: false, // 数据是否加载中，设置为 true 也 ok
     };
+    label = "";
+    value = "";
     onFilter = filters => {
         window.scrollTo(0, 0); // 每次搜索时，搜索结果都从最顶部显示
         this.filters = filters;
@@ -34,7 +37,7 @@ export default class HouseList extends Component {
         Toast.loading("加载中...", 0, null, false);
         const { data } = await API.get("/houses", {
             params: {
-                cityId: value,
+                cityId: this.value,
                 ...this.filters,
                 start: 1,
                 end: 20,
@@ -51,7 +54,10 @@ export default class HouseList extends Component {
             isLoading: false, // 数据是否加载中，否，加载完啦
         });
     }
-    componentDidMount() {
+    async componentDidMount() {
+        const { label, value } = await getCurrentCity();
+        this.label = label;
+        this.value = value;
         this.onSearchHouseList();
     }
     renderHouseList = ({ key, index, style }) => {
@@ -89,7 +95,7 @@ export default class HouseList extends Component {
             // 数据加载完成时调用 resolve 即可
             API.get("/houses", {
                 params: {
-                    cityId: value,
+                    cityId: this.value,
                     ...this.filters,
                     start: startIndex,
                     end: stopIndex,
@@ -146,7 +152,7 @@ export default class HouseList extends Component {
                         onClick={() => this.props.history.go(-1)}
                     />
                     <SearchHeader
-                        cityName={label}
+                        cityName={this.label}
                         className={styles.searchHeader}
                     />
                 </Flex>
