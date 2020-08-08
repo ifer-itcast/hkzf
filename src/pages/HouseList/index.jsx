@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Flex } from "antd-mobile";
+import { Flex, Toast } from "antd-mobile";
 import {
     List,
     WindowScroller,
@@ -27,6 +27,7 @@ export default class HouseList extends Component {
         this.onSearchHouseList();
     };
     async onSearchHouseList() {
+        Toast.loading('加载中...', 0, null, false);
         const { data } = await API.get("/houses", {
             params: {
                 cityId: value,
@@ -36,6 +37,10 @@ export default class HouseList extends Component {
             },
         });
         const { list, count } = data.body;
+        Toast.hide();
+        if (count !== 0) {
+            Toast.info(`共找到 ${count} 套房源`, 2, null, false);
+        }
         this.setState({
             list,
             count,
