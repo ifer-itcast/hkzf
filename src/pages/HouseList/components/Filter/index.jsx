@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Spring } from "react-spring/renderprops";
 
 import FilterTitle from "../FilterTitle";
 import FilterPicker from "../FilterPicker";
@@ -94,7 +95,7 @@ export default class Filter extends Component {
     // 注意：this指向的问题！！！
     // 说明：要实现完整的功能，需要后续的组件配合完成！
     onTitleClick = type => {
-        this.htmlBody.className = 'body-fixed';
+        this.htmlBody.className = "body-fixed";
 
         const { titleSelectedStatus, selectedValues } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
@@ -139,7 +140,7 @@ export default class Filter extends Component {
         }); */
     };
     onCancel = type => {
-        this.htmlBody.className = '';
+        this.htmlBody.className = "";
 
         const { titleSelectedStatus, selectedValues } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
@@ -165,7 +166,7 @@ export default class Filter extends Component {
         });
     };
     onSave = (type, value) => {
-        this.htmlBody.className = '';
+        this.htmlBody.className = "";
         // console.log(this.state.openType === type); // true
         const { titleSelectedStatus } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
@@ -191,9 +192,9 @@ export default class Filter extends Component {
         const { area, mode, price, more } = newSelectedValues;
         // #1 区域
         const areaKey = area[0];
-        let areaValue = 'null';
-        if(area.length === 3) {
-            areaValue = area[2] !== 'null' ? area[2] : area[1];
+        let areaValue = "null";
+        if (area.length === 3) {
+            areaValue = area[2] !== "null" ? area[2] : area[1];
         }
         filters[areaKey] = areaValue;
         // #2 方式
@@ -201,8 +202,8 @@ export default class Filter extends Component {
         // #3 租金
         filters.price = price[0];
         // #4 更多
-        filters.more = more.join(',');
-        
+        filters.more = more.join(",");
+
         // 将筛选数据传递给父组件
         this.props.onFilter(filters);
 
@@ -242,10 +243,14 @@ export default class Filter extends Component {
                 {openType === "area" ||
                 openType === "mode" ||
                 openType === "price"
-                    ? <div
-                          className={styles.mask}
-                          onClick={() => this.onCancel(openType)}
-                      />
+                    ? <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
+                          {props =>
+                              <div
+                                  style={props}
+                                  className={styles.mask}
+                                  onClick={() => this.onCancel(openType)}
+                              />}
+                      </Spring>
                     : null}
                 <div className={styles.content}>
                     {/* 标题栏 */}
