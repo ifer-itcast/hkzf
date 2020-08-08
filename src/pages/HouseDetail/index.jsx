@@ -7,6 +7,7 @@ import HouseItem from "../../components/HouseItem";
 import HousePackage from "../../components/HousePackage";
 
 import { BASE_URL } from "../../utils/url";
+import { API } from '../../utils/api';
 
 import styles from "./index.module.css";
 
@@ -96,8 +97,7 @@ export default class HouseDetail extends Component {
     };
 
     componentDidMount() {
-        const { params } = this.props.match;
-        const { id } = params;
+        this.getHouseDetail();
         
         this.renderMap("天山星城", {
             latitude: "31.219228",
@@ -107,9 +107,9 @@ export default class HouseDetail extends Component {
 
     // 渲染轮播图结构
     renderSwipers() {
-        const { houseInfo: { slides } } = this.state;
-
-        return slides.map(item =>
+        const { houseInfo } = this.state;
+        houseInfo.slides = houseInfo.slides || [];
+        return houseInfo.slides.map(item =>
             <a
                 key={item.id}
                 href="http://itcast.cn"
@@ -143,11 +143,18 @@ export default class HouseDetail extends Component {
 
         label.setStyle(labelStyle);
         label.setContent(`
-      <span>${community}</span>
-      <div class="${styles.mapArrow}"></div>
-    `);
+            <span>${community}</span>
+            <div class="${styles.mapArrow}"></div>
+        `);
         map.addOverlay(label);
     }
+    getHouseDetail = async () => {
+        const { id } = this.props.match.params;
+        const { data } = await API.get(`/houses/${id}`);
+        this.setState({
+            houseInfo: data.body
+        });
+    };
 
     render() {
         const { isLoading } = this.state;
