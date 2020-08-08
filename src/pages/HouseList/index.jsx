@@ -25,6 +25,7 @@ export default class HouseList extends Component {
         isLoading: false, // 数据是否加载中，设置为 true 也 ok
     };
     onFilter = filters => {
+        window.scrollTo(0, 0); // 每次搜索时，搜索结果都从最顶部显示
         this.filters = filters;
         this.onSearchHouseList();
     };
