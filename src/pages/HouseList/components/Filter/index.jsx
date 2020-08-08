@@ -32,6 +32,7 @@ export default class Filter extends Component {
         selectedValues,
     };
     componentDidMount() {
+        this.htmlBody = document.body;
         this.getFiltersData();
     }
     async getFiltersData() {
@@ -93,6 +94,8 @@ export default class Filter extends Component {
     // 注意：this指向的问题！！！
     // 说明：要实现完整的功能，需要后续的组件配合完成！
     onTitleClick = type => {
+        this.htmlBody.className = 'body-fixed';
+
         const { titleSelectedStatus, selectedValues } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
 
@@ -136,6 +139,8 @@ export default class Filter extends Component {
         }); */
     };
     onCancel = type => {
+        this.htmlBody.className = '';
+
         const { titleSelectedStatus, selectedValues } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
         const selectedVal = selectedValues[type];
@@ -160,6 +165,7 @@ export default class Filter extends Component {
         });
     };
     onSave = (type, value) => {
+        this.htmlBody.className = '';
         // console.log(this.state.openType === type); // true
         const { titleSelectedStatus } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
