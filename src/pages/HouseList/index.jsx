@@ -47,9 +47,18 @@ export default class HouseList extends Component {
         // 根据索引号来获取当前这一行的房屋数据
         const { list } = this.state;
         const house = list[index];
+        if (!house) {
+            return (
+                <div key={key} style={style}>
+                    <p className={styles.loading} />
+                </div>
+            );
+        }
+
         return (
             <HouseItem
                 key={key}
+                // 注意这里的style不要忘了在 Houseitem 中进行接受
                 style={style}
                 src={BASE_URL + house.houseImg}
                 title={house.title}
@@ -67,6 +76,19 @@ export default class HouseList extends Component {
     loadMoreRows = ({ startIndex, stopIndex }) => {
         return new Promise(resolve => {
             // 数据加载完成时调用 resolve 即可
+            API.get("/houses", {
+                params: {
+                    cityId: value,
+                    ...this.filters,
+                    start: startIndex,
+                    end: stopIndex,
+                },
+            }).then(res => {
+                this.setState({
+                    list: [...this.state.list, ...res.data.body.list],
+                });
+                resolve();
+            });
         });
     };
     render() {
