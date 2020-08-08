@@ -196,7 +196,9 @@ export default class Filter extends Component {
         filters.price = price[0];
         // #4 更多
         filters.more = more.join(',');
-        console.log(filters);
+        
+        // 将筛选数据传递给父组件
+        this.props.onFilter(filters);
 
         this.setState({
             openType: "",
