@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Toast } from 'antd-mobile';
-import { BASE_URL } from '../../utils/url';
-import { API } from '../../utils/api';
+import { Toast } from "antd-mobile";
+import HouseItem from "../../components/HouseItem";
+import { BASE_URL } from "../../utils/url";
+import { API } from "../../utils/api";
 import NavHeader from "../../components/NavHeader";
 // import "./index.scss";
 import styles from "./index.module.css";
@@ -87,7 +88,7 @@ export default class Map extends Component {
             },
             label
         );
-        map.addEventListener('movestart', () => {
+        map.addEventListener("movestart", () => {
             if (this.state.isShowList) {
                 this.setState({ isShowList: false });
             }
@@ -97,10 +98,8 @@ export default class Map extends Component {
     // #1
     async renderOverlays(id) {
         try {
-            Toast.loading('加载中...', 0, null, false);
-            const { data } = await API.get(
-                `/area/map?id=${id}`
-            );
+            Toast.loading("加载中...", 0, null, false);
+            const { data } = await API.get(`/area/map?id=${id}`);
             Toast.hide();
             // #2
             const { nextZoom, type } = this.getTypeAndZoom();
@@ -108,7 +107,7 @@ export default class Map extends Component {
                 // #3 创建覆盖物
                 this.createOverlays(item, nextZoom, type);
             });
-        } catch(e) {
+        } catch (e) {
             Toast.hide();
         }
     }
@@ -200,57 +199,65 @@ export default class Map extends Component {
     }
     getHouseList = async id => {
         try {
-            Toast.loading('加载中...', 0, null, false);
-            const { data } = await API.get(
-                `/houses?cityId=${id}`
-            );
+            Toast.loading("加载中...", 0, null, false);
+            const { data } = await API.get(`/houses?cityId=${id}`);
             Toast.hide();
             this.setState({ housesList: data.body.list, isShowList: true });
-        } catch(e) {
+        } catch (e) {
             Toast.hide();
         }
     };
     renderHouseList = () => {
+        // return this.state.housesList.map(item =>
+        //     <div className={styles.house} key={item.houseCode}>
+        //         <div className={styles.imgWrap}>
+        //             <img
+        //                 className={styles.img}
+        //                 src={BASE_URL+item.houseImg}
+        //                 alt=""
+        //             />
+        //         </div>
+        //         <div className={styles.content}>
+        //             <h3 className={styles.title}>
+        //                 {item.title}
+        //             </h3>
+        //             <div className={styles.desc}>
+        //                 {item.desc}
+        //             </div>
+        //             <div>
+        //                 {item.tags.map((tag, index) => {
+        //                     const tagClass = "tag" + (index + 1);
+        //                     return (
+        //                         <span
+        //                             className={[
+        //                                 styles.tag,
+        //                                 styles[tagClass],
+        //                             ].join(" ")}
+        //                             key={tag}
+        //                         >
+        //                             {tag}
+        //                         </span>
+        //                     );
+        //                 })}
+        //             </div>
+        //             <div className={styles.price}>
+        //                 <span className={styles.priceNum}>
+        //                     {item.price}
+        //                 </span>{" "}
+        //                 元/月
+        //             </div>
+        //         </div>
+        //     </div>
+        // );
         return this.state.housesList.map(item =>
-            <div className={styles.house} key={item.houseCode}>
-                <div className={styles.imgWrap}>
-                    <img
-                        className={styles.img}
-                        src={BASE_URL+item.houseImg}
-                        alt=""
-                    />
-                </div>
-                <div className={styles.content}>
-                    <h3 className={styles.title}>
-                        {item.title}
-                    </h3>
-                    <div className={styles.desc}>
-                        {item.desc}
-                    </div>
-                    <div>
-                        {item.tags.map((tag, index) => {
-                            const tagClass = "tag" + (index + 1);
-                            return (
-                                <span
-                                    className={[
-                                        styles.tag,
-                                        styles[tagClass],
-                                    ].join(" ")}
-                                    key={tag}
-                                >
-                                    {tag}
-                                </span>
-                            );
-                        })}
-                    </div>
-                    <div className={styles.price}>
-                        <span className={styles.priceNum}>
-                            {item.price}
-                        </span>{" "}
-                        元/月
-                    </div>
-                </div>
-            </div>
+            <HouseItem
+                key={item.houseCode}
+                src={BASE_URL + item.houseImg}
+                title={item.title}
+                desc={item.desc}
+                tags={item.tags}
+                price={item.price}
+            />
         );
     };
     render() {
