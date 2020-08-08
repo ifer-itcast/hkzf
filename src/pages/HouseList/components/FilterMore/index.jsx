@@ -6,7 +6,7 @@ import styles from "./index.module.css";
 
 export default class FilterMore extends Component {
     state = {
-        selectedValues: [],
+        selectedValues: this.props.defaultValue,
     };
     onTagClick = value => {
         const { selectedValues } = this.state;
@@ -41,7 +41,8 @@ export default class FilterMore extends Component {
         });
     };
     onCancel = () => {
-        // 取消按钮的事件处理
+        // 注意这里清除的只是当前组件的数据，父组件的数据并没有清除，这正是我们期望的
+        // 这也是为什么给自己组件加 selectedValues 的作用，方便处理自己的状态
         this.setState({
             selectedValues: [],
         });
@@ -53,11 +54,12 @@ export default class FilterMore extends Component {
     render() {
         const {
             data: { roomType, oriented, floor, characteristic },
+            onCancel,
         } = this.props;
         return (
             <div className={styles.root}>
                 {/* 遮罩层 */}
-                <div className={styles.mask} />
+                <div className={styles.mask} onClick={onCancel} />
 
                 {/* 条件内容 */}
                 <div className={styles.tags}>

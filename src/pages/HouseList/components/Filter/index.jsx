@@ -147,16 +147,29 @@ export default class Filter extends Component {
             },
         });
     };
+    onCancel = () => {
+        this.setState({ openType: "" });
+    };
     renderFilterMore = () => {
         const {
             openType,
             filtersData: { roomType, oriented, floor, characteristic },
+            selectedValues,
         } = this.state;
         if (openType !== "more") {
             return null;
         }
         const data = { roomType, oriented, floor, characteristic };
-        return <FilterMore data={data} type={openType} onSave={this.onSave}/>;
+        const defaultValue = selectedValues.more;
+        return (
+            <FilterMore
+                data={data}
+                type={openType}
+                onSave={this.onSave}
+                defaultValue={defaultValue}
+                onCancel={this.onCancel}
+            />
+        );
     };
     render() {
         const { titleSelectedStatus, openType } = this.state;
