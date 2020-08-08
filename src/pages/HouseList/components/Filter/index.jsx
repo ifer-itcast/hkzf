@@ -93,7 +93,38 @@ export default class Filter extends Component {
     // 注意：this指向的问题！！！
     // 说明：要实现完整的功能，需要后续的组件配合完成！
     onTitleClick = type => {
-        this.setState(prevState => {
+        const { titleSelectedStatus, selectedValues } = this.state;
+        const newTitleSelectedStatus = { ...titleSelectedStatus };
+
+        // ['area', 'mode', 'price', 'more']
+        Object.keys(titleSelectedStatus).forEach(key => {
+            // 当前标题
+            if (key === type) {
+                newTitleSelectedStatus[type] = true;
+                return;
+            }
+            // 其他标题
+            const selectedVal = selectedValues[key];
+            if (
+                key === "area" &&
+                (selectedVal.length !== 2 || selectedVal[0] !== "area")
+            ) {
+                newTitleSelectedStatus[key] = true;
+            } else if (key === "mode" && selectedVal[0] !== "null") {
+                newTitleSelectedStatus[key] = true;
+            } else if (key === "price" && selectedVal[0] !== "null") {
+                newTitleSelectedStatus[key] = true;
+            } else if (key === "more") {
+
+            } else {
+                newTitleSelectedStatus[key] = false;
+            }
+        });
+        this.setState({
+            openType: type,
+            titleSelectedStatus: newTitleSelectedStatus
+        });
+        /* this.setState(prevState => {
             return {
                 titleSelectedStatus: {
                     // 获取当前对象中所有属性的值
@@ -102,7 +133,7 @@ export default class Filter extends Component {
                 },
                 openType: type, // 展示 FilterPicker 和 遮罩
             };
-        });
+        }); */
     };
     onCancel = () => {
         this.setState({ openType: "" });
