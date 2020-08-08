@@ -139,7 +139,7 @@ export default class Filter extends Component {
         const { titleSelectedStatus, selectedValues } = this.state;
         const newTitleSelectedStatus = { ...titleSelectedStatus };
         const selectedVal = selectedValues[type];
-        console.log(selectedVal, 233)
+        console.log(selectedVal, 233);
         if (
             type === "area" &&
             (selectedVal.length !== 2 || selectedVal[0] !== "area")
@@ -175,12 +175,32 @@ export default class Filter extends Component {
             newTitleSelectedStatus[type] = false;
         }
 
+        const newSelectedValues = {
+            ...this.state.selectedValues,
+            [type]: value,
+        };
+
+        // 组装筛选条件
+        const filters = {};
+        const { area, mode, price, more } = newSelectedValues;
+        // #1 区域
+        const areaKey = area[0];
+        let areaValue = 'null';
+        if(area.length === 3) {
+            areaValue = area[2] !== 'null' ? area[2] : area[1];
+        }
+        filters[areaKey] = areaValue;
+        // #2 方式
+        filters.mode = mode[0];
+        // #3 租金
+        filters.price = price[0];
+        // #4 更多
+        filters.more = more.join(',');
+        console.log(filters);
+
         this.setState({
             openType: "",
-            selectedValues: {
-                ...this.state.selectedValues,
-                [type]: value,
-            },
+            selectedValues: newSelectedValues,
             titleSelectedStatus: newTitleSelectedStatus,
         });
     };
