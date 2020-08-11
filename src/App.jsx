@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import CityList from "./pages/CityList";
 import Map from "./pages/Map";
 import HouseDetail from "./pages/HouseDetail";
+import Login from './pages/Login'
 
 class App extends Component {
     render() {
@@ -20,6 +21,7 @@ class App extends Component {
                     <Route path="/citylist" component={CityList} />
                     <Route path="/map" component={Map} />
                     <Route path="/detail/:id" component={HouseDetail} />
+                    <Route path="/login" component={Login} />
                 </div>
             </Router>
         );
