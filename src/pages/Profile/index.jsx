@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 
 import { Link } from "react-router-dom";
-import { Grid, Button } from "antd-mobile";
+import { Grid, Button, Modal } from "antd-mobile";
 
-import { BASE_URL, isAuth, getToken, API } from "../../utils";
+import { BASE_URL, isAuth, getToken, API, removeToken } from "../../utils";
 
 import styles from "./index.module.css";
+const alert = Modal.alert;
 
 // 菜单数据
 const menus = [
@@ -54,6 +55,26 @@ export default class Profile extends Component {
                 }
             });
         }
+    }
+    logout = () => {
+        alert('提示', '是否确定退出？', [
+            { text: '取消' },
+            { text: '退出', onPress: async () => {
+                await API.post('/user/logout', null, {
+                    headers: {
+                        authorization: getToken()
+                    }
+                });
+                removeToken();
+                this.setState({
+                    isLogin: isAuth(),
+                    userInfo: {
+                        avatar: "",
+                        nickname: ""
+                    }
+                });
+            } },
+        ]);
     }
     render() {
         const { history } = this.props;
