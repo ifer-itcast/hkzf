@@ -3,16 +3,18 @@ import { Flex, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { Link } from "react-router-dom";
 import { API } from "../../utils";
 import { withFormik } from "formik";
+import * as Yup from "yup";
 import NavHeader from "../../components/NavHeader";
 import styles from "./index.module.css";
 
 // 验证规则：
-// const REG_UNAME = /^[a-zA-Z_\d]{5,8}$/
-// const REG_PWD = /^[a-zA-Z_\d]{5,12}$/
+const REG_UNAME = /^[a-zA-Z_\d]{5,8}$/;
+const REG_PWD = /^[a-zA-Z_\d]{5,12}$/;
 
 class Login extends Component {
     render() {
         const { values, handleSubmit, handleChange } = this.props;
+        const { errors, touched, handleBlur } = this.props;
         return (
             <div className={styles.root}>
                 {/* 顶部导航 */}
@@ -29,8 +31,14 @@ class Login extends Component {
                                 placeholder="请输入账号"
                                 value={values.username}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                             />
                         </div>
+                        {errors.username &&
+                            touched.username &&
+                            <div className={styles.error}>
+                                {errors.username}
+                            </div>}
                         {/* 长度为5到8位，只能出现数字、字母、下划线 */}
                         {/* <div className={styles.error}>账号为必填项</div> */}
                         <div className={styles.formItem}>
@@ -41,8 +49,14 @@ class Login extends Component {
                                 placeholder="请输入密码"
                                 value={values.password}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                             />
                         </div>
+                        {errors.password &&
+                            touched.password &&
+                            <div className={styles.error}>
+                                {errors.password}
+                            </div>}
                         {/* 长度为5到12位，只能出现数字、字母、下划线 */}
                         {/* <div className={styles.error}>账号为必填项</div> */}
                         <div className={styles.formSubmit}>
@@ -64,6 +78,14 @@ class Login extends Component {
 
 export default withFormik({
     mapPropsToValues: () => ({ username: "", password: "" }),
+    validationSchema: Yup.object().shape({
+        username: Yup.string()
+            .required("账号为必填项")
+            .matches(REG_UNAME, "长度为5到8位，只能出现数字、字母、下划线"),
+        password: Yup.string()
+            .required("密码为必填项")
+            .matches(REG_PWD, "长度为5到12位，只能出现数字、字母、下划线"),
+    }),
     handleSubmit: async (values, { props }) => {
         const { username, password } = values;
         const {
