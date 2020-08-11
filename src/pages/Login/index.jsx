@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Flex, WingBlank, WhiteSpace } from "antd-mobile";
-
+import { Flex, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { Link } from "react-router-dom";
-
+import { API } from "../../utils";
 import NavHeader from "../../components/NavHeader";
-
 import styles from "./index.module.css";
 
 // 验证规则：
@@ -21,10 +19,21 @@ class Login extends Component {
             [e.target.name]: e.target.value,
         });
     };
-    handleSubmit = e => {
+    handleSubmit = async e => {
         e.preventDefault();
-        console.log(this.state);
-    }
+        const { username, password } = this.state;
+        const {
+            data: { status, body, description },
+        } = await API.post("/user/login", { username, password });
+        if (status === 200) {
+            // 登陆成功
+            localStorage.setItem("hkzf_token", body.token);
+            this.props.history.go(-1);
+        } else {
+            // 登陆失败，内容、持续时间、关闭后回调、是否显示透明蒙层
+            Toast.info(description, 2, null, false);
+        }
+    };
     render() {
         const { username, password } = this.state;
         return (
