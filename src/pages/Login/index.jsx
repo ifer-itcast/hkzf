@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Flex, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { Link } from "react-router-dom";
 import { API } from "../../utils";
+import { withFormik } from "formik";
 import NavHeader from "../../components/NavHeader";
 import styles from "./index.module.css";
 
@@ -10,32 +11,8 @@ import styles from "./index.module.css";
 // const REG_PWD = /^[a-zA-Z_\d]{5,12}$/
 
 class Login extends Component {
-    state = {
-        username: "",
-        password: "",
-    };
-    handleChange = e => {
-        this.setState({
-            [e.target.name]: e.target.value,
-        });
-    };
-    handleSubmit = async e => {
-        e.preventDefault();
-        const { username, password } = this.state;
-        const {
-            data: { status, body, description },
-        } = await API.post("/user/login", { username, password });
-        if (status === 200) {
-            // 登陆成功
-            localStorage.setItem("hkzf_token", body.token);
-            this.props.history.go(-1);
-        } else {
-            // 登陆失败，内容、持续时间、关闭后回调、是否显示透明蒙层
-            Toast.info(description, 2, null, false);
-        }
-    };
     render() {
-        const { username, password } = this.state;
+        const { values, handleSubmit, handleChange } = this.props;
         return (
             <div className={styles.root}>
                 {/* 顶部导航 */}
@@ -44,14 +21,14 @@ class Login extends Component {
 
                 {/* 登录表单 */}
                 <WingBlank>
-                    <form onSubmit={this.handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <div className={styles.formItem}>
                             <input
                                 className={styles.input}
                                 name="username"
                                 placeholder="请输入账号"
-                                value={username}
-                                onChange={this.handleChange}
+                                value={values.username}
+                                onChange={handleChange}
                             />
                         </div>
                         {/* 长度为5到8位，只能出现数字、字母、下划线 */}
@@ -62,8 +39,8 @@ class Login extends Component {
                                 name="password"
                                 type="password"
                                 placeholder="请输入密码"
-                                value={password}
-                                onChange={this.handleChange}
+                                value={values.password}
+                                onChange={handleChange}
                             />
                         </div>
                         {/* 长度为5到12位，只能出现数字、字母、下划线 */}
@@ -85,4 +62,20 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default withFormik({
+    mapPropsToValues: () => ({ username: "", password: "" }),
+    handleSubmit: async (values, { props }) => {
+        const { username, password } = values;
+        const {
+            data: { status, body, description },
+        } = await API.post("/user/login", { username, password });
+        if (status === 200) {
+            // 登陆成功
+            localStorage.setItem("hkzf_token", body.token);
+            props.history.go(-1);
+        } else {
+            // 登陆失败，内容、持续时间、关闭后回调、是否显示透明蒙层
+            Toast.info(description, 2, null, false);
+        }
+    },
+})(Login);
