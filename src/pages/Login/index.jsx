@@ -12,7 +12,21 @@ import styles from "./index.module.css";
 // const REG_PWD = /^[a-zA-Z_\d]{5,12}$/
 
 class Login extends Component {
+    state = {
+        username: "",
+        password: "",
+    };
+    handleChange = e => {
+        this.setState({
+            [e.target.name]: e.target.value,
+        });
+    };
+    handleSubmit = e => {
+        e.preventDefault();
+        console.log(this.state);
+    }
     render() {
+        const { username, password } = this.state;
         return (
             <div className={styles.root}>
                 {/* 顶部导航 */}
@@ -21,12 +35,14 @@ class Login extends Component {
 
                 {/* 登录表单 */}
                 <WingBlank>
-                    <form>
+                    <form onSubmit={this.handleSubmit}>
                         <div className={styles.formItem}>
                             <input
                                 className={styles.input}
                                 name="username"
                                 placeholder="请输入账号"
+                                value={username}
+                                onChange={this.handleChange}
                             />
                         </div>
                         {/* 长度为5到8位，只能出现数字、字母、下划线 */}
@@ -37,6 +53,8 @@ class Login extends Component {
                                 name="password"
                                 type="password"
                                 placeholder="请输入密码"
+                                value={password}
+                                onChange={this.handleChange}
                             />
                         </div>
                         {/* 长度为5到12位，只能出现数字、字母、下划线 */}
