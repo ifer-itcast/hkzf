@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Flex, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { Link } from "react-router-dom";
 import { API } from "../../utils";
-import { withFormik } from "formik";
+import { withFormik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import NavHeader from "../../components/NavHeader";
 import styles from "./index.module.css";
@@ -13,58 +13,49 @@ const REG_PWD = /^[a-zA-Z_\d]{5,12}$/;
 
 class Login extends Component {
     render() {
-        const { values, handleSubmit, handleChange } = this.props;
-        const { errors, touched, handleBlur } = this.props;
         return (
             <div className={styles.root}>
                 {/* 顶部导航 */}
                 <NavHeader className={styles.navHeader}>账号登录</NavHeader>
                 <WhiteSpace size="xl" />
-
                 {/* 登录表单 */}
                 <WingBlank>
-                    <form onSubmit={handleSubmit}>
+                    <Form>
                         <div className={styles.formItem}>
-                            <input
+                            <Field
                                 className={styles.input}
                                 name="username"
                                 placeholder="请输入账号"
-                                value={values.username}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
                             />
                         </div>
-                        {errors.username &&
-                            touched.username &&
-                            <div className={styles.error}>
-                                {errors.username}
-                            </div>}
-                        {/* 长度为5到8位，只能出现数字、字母、下划线 */}
-                        {/* <div className={styles.error}>账号为必填项</div> */}
+                        {
+                            <ErrorMessage
+                                className={styles.error}
+                                name="username"
+                                component="div"
+                            />
+                        }
                         <div className={styles.formItem}>
-                            <input
+                            <Field
                                 className={styles.input}
                                 name="password"
-                                type="password"
                                 placeholder="请输入密码"
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                type="password"
                             />
                         </div>
-                        {errors.password &&
-                            touched.password &&
-                            <div className={styles.error}>
-                                {errors.password}
-                            </div>}
-                        {/* 长度为5到12位，只能出现数字、字母、下划线 */}
-                        {/* <div className={styles.error}>账号为必填项</div> */}
+                        {
+                            <ErrorMessage
+                                className={styles.error}
+                                name="password"
+                                component="div"
+                            />
+                        }
                         <div className={styles.formSubmit}>
                             <button className={styles.submit} type="submit">
                                 登 录
                             </button>
                         </div>
-                    </form>
+                    </Form>
                     <Flex className={styles.backHome}>
                         <Flex.Item>
                             <Link to="/registe">还没有账号，去注册~</Link>
