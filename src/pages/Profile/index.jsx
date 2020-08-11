@@ -41,9 +41,9 @@ export default class Profile extends Component {
             return;
         }
         const { data } = await API.get('/user', {
-            headers: {
-                authorization: getToken()
-            }
+            // headers: {
+            //     authorization: getToken()
+            // }
         });
         if (data.status === 200) {
             let { avatar, nickname } = data.body;
@@ -54,6 +54,9 @@ export default class Profile extends Component {
                     nickname
                 }
             });
+        } else {
+            // token 失效，是不是每一个都要处理！？
+            this.setState({ isLogin: false });
         }
     }
     logout = () => {
