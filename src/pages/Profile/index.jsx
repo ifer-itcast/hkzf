@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Button } from "antd-mobile";
 
-import { BASE_URL } from "../../utils";
+import { BASE_URL, isAuth, getToken, API } from "../../utils";
 
 import styles from "./index.module.css";
 
@@ -25,9 +25,39 @@ const menus = [
 const DEFAULT_AVATAR = BASE_URL + "/img/profile/avatar.png";
 
 export default class Profile extends Component {
+    state = {
+        isLogin: isAuth(), // mark!!!
+        userInfo: {
+            avatar: '',
+            nickname: ''
+        }
+    }
+    componentDidMount() {
+        this.getUserInfo();
+    }
+    async getUserInfo() {
+        if(!this.state.isLogin) {
+            return;
+        }
+        const { data } = await API.get('/user', {
+            headers: {
+                authorization: getToken()
+            }
+        });
+        if (data.status === 200) {
+            let { avatar, nickname } = data.body;
+            avatar = avatar || '/img/profile/bg.png';
+            this.setState({
+                userInfo: {
+                    avatar: BASE_URL + avatar,
+                    nickname
+                }
+            });
+        }
+    }
     render() {
         const { history } = this.props;
-
+        const { isLogin, userInfo: { avatar, nickname } } = this.state;
         return (
             <div className={styles.root}>
                 {/* 个人信息 */}
@@ -41,36 +71,38 @@ export default class Profile extends Component {
                         <div className={styles.myIcon}>
                             <img
                                 className={styles.avatar}
-                                src={DEFAULT_AVATAR}
+                                src={avatar || DEFAULT_AVATAR}
                                 alt="icon"
                             />
                         </div>
                         <div className={styles.user}>
-                            <div className={styles.name}>游客</div>
-                            {/* 登录后展示： */}
-                            {/* <>
-                <div className={styles.auth}>
-                  <span onClick={this.logout}>退出</span>
-                </div>
-                <div className={styles.edit}>
-                  编辑个人资料
-                  <span className={styles.arrow}>
-                    <i className="iconfont icon-arrow" />
-                  </span>
-                </div>
-              </> */}
-
-                            {/* 未登录展示： */}
-                            <div className={styles.edit}>
-                                <Button
-                                    type="primary"
-                                    size="small"
-                                    inline
-                                    onClick={() => history.push("/login")}
-                                >
-                                    去登录
-                                </Button>
-                            </div>
+                            <div className={styles.name}>{nickname || '游客'}</div>
+                            {
+                                isLogin
+                                ?
+                                <>
+                                    <div className={styles.auth}>
+                                    <span onClick={this.logout}>退出</span>
+                                    </div>
+                                    <div className={styles.edit}>
+                                    编辑个人资料
+                                    <span className={styles.arrow}>
+                                        <i className="iconfont icon-arrow" />
+                                    </span>
+                                    </div>
+                                </>
+                                :
+                                <div className={styles.edit}>
+                                    <Button
+                                        type="primary"
+                                        size="small"
+                                        inline
+                                        onClick={() => history.push("/login")}
+                                    >
+                                        去登录
+                                    </Button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

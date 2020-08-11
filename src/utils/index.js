@@ -29,3 +29,4 @@ export const getCurrentCity = () => {
 
 export { API } from './api';
 export { BASE_URL } from './url';
+export { isAuth, getToken, setToken, removeToken } from './auth';
