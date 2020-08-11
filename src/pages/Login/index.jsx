@@ -85,7 +85,13 @@ export default withFormik({
         if (status === 200) {
             // 登陆成功
             localStorage.setItem("hkzf_token", body.token);
-            props.history.go(-1);
+            if (!props.location.state) {
+                // 没有 state，说明是直接进入该登录页面的
+                props.history.go(-1);
+            } else {
+                // replace：不期望返回时再回到登录页面
+                props.history.replace(props.location.state.from.pathname);
+            }
         } else {
             // 登陆失败，内容、持续时间、关闭后回调、是否显示透明蒙层
             Toast.info(description, 2, null, false);
